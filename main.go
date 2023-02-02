@@ -3,10 +3,13 @@ package main
 import (
 	"net/http"
 
-	"github.com/SeungyeonHwang/tool-goaal/myapp"
+	fileapp "github.com/SeungyeonHwang/tool-goaal/fileApp"
 )
 
 func main() {
+	// httpApp
+	// http.ListenAndServe("127.0.0.1:3000", httpApp.NewHttpHandler())
 
-	http.ListenAndServe("127.0.0.1:3000", myapp.NewHttpHandler())
+	//FileApp
+	http.ListenAndServe("127.0.0.1:3000", fileapp.NewHttpHandler())
 }

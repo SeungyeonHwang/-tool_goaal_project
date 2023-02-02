@@ -1,4 +1,4 @@
-package myapp
+package httpapp
 
 import (
 	"encoding/json"
@@ -13,7 +13,6 @@ import (
 
 func TestIndexPathHandler(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/", nil)
 
@@ -27,7 +26,6 @@ func TestIndexPathHandler(t *testing.T) {
 
 func TestBarPathHandler_WithoutName(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/bar", nil)
 
@@ -42,7 +40,6 @@ func TestBarPathHandler_WithoutName(t *testing.T) {
 func TestBarHandler_WithName(t *testing.T) {
 	query := "hwang"
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/bar?name="+query, nil)
 
@@ -56,7 +53,6 @@ func TestBarHandler_WithName(t *testing.T) {
 
 func TestFooHandler_WithoutJson(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/foo", nil)
 
@@ -68,7 +64,6 @@ func TestFooHandler_WithoutJson(t *testing.T) {
 
 func TestFooHandler_WithJson(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/foo",
 		strings.NewReader(

@@ -1,4 +1,4 @@
-package myapp
+package httpapp
 
 import (
 	"encoding/json"
@@ -48,9 +48,7 @@ func NewHttpHandler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", indexHandler)
-
 	mux.HandleFunc("/bar", barHandler)
-
 	mux.Handle("/foo", &fooHandler{})
 
 	return mux
