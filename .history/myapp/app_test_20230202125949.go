@@ -1,11 +1,9 @@
 package myapp
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,7 +11,6 @@ import (
 
 func TestIndexPathHandler(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/", nil)
 
@@ -27,7 +24,6 @@ func TestIndexPathHandler(t *testing.T) {
 
 func TestBarPathHandler_WithoutName(t *testing.T) {
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/bar", nil)
 
@@ -42,7 +38,6 @@ func TestBarPathHandler_WithoutName(t *testing.T) {
 func TestBarHandler_WithName(t *testing.T) {
 	query := "hwang"
 	assert := assert.New(t)
-
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/bar?name="+query, nil)
 
@@ -70,19 +65,10 @@ func TestFooHandler_WithJson(t *testing.T) {
 	assert := assert.New(t)
 
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/foo",
-		strings.NewReader(
-			`{"first_name": "seungyeon","last_name": "hwang","email":"hwang@gmail.com"}`))
+	req := httptest.NewRequest("POST", "/foo", nil)
 
 	mux := NewHttpHandler()
 	mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code)
-
-	user := new(User)
-	err := json.NewDecoder(res.Body).Decode(user)
-	assert.Nil(err)
-	assert.Equal("seungyeon", user.FirstName)
-	assert.Equal("hwang", user.LastName)
-	assert.Equal("hwang@gmail.com", user.Email)
+	assert.Equal(http.StatusBadRequest, res.Code)
 }

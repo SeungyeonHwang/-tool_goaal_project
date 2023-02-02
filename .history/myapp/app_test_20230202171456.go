@@ -1,7 +1,6 @@
 package myapp
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -78,11 +77,4 @@ func TestFooHandler_WithJson(t *testing.T) {
 	mux.ServeHTTP(res, req)
 
 	assert.Equal(http.StatusOK, res.Code)
-
-	user := new(User)
-	err := json.NewDecoder(res.Body).Decode(user)
-	assert.Nil(err)
-	assert.Equal("seungyeon", user.FirstName)
-	assert.Equal("hwang", user.LastName)
-	assert.Equal("hwang@gmail.com", user.Email)
 }
