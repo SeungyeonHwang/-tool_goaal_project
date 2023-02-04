@@ -1,1 +1,5 @@
-# init
+- FileUpload/DownLaod
+- REST Full API
+- 채팅
+  - 프로젝트 단위별 저장, 완료목록 날짜별 정리(토글 처리), 다시 가져오기
+- TODO

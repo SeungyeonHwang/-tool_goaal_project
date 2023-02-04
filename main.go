@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	fileapp "github.com/SeungyeonHwang/tool-goaal/fileApp"
+	restfulapp "github.com/SeungyeonHwang/tool-goaal/restfulApp"
 )
 
 func main() {
@@ -11,5 +11,8 @@ func main() {
 	// http.ListenAndServe("127.0.0.1:3000", httpApp.NewHttpHandler())
 
 	//FileApp
-	http.ListenAndServe("127.0.0.1:3000", fileapp.NewHttpHandler())
+	// http.ListenAndServe("127.0.0.1:3000", fileapp.NewHttpHandler())
+
+	//RestfulAppÂ˜
+	http.ListenAndServe("127.0.0.1:3000", restfulapp.NewHttpHandler())
 }
