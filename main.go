@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	restfulapp "github.com/SeungyeonHwang/tool-goaal/restfulApp"
+	decoratorwebapp "github.com/SeungyeonHwang/tool-goaal/decoratorWebApp"
 )
 
 func main() {
@@ -13,6 +13,10 @@ func main() {
 	//FileApp
 	// http.ListenAndServe("127.0.0.1:3000", fileapp.NewHttpHandler())
 
-	//RestfulAppÂ˜
-	http.ListenAndServe("127.0.0.1:3000", restfulapp.NewHttpHandler())
+	//RestfulApp
+	// http.ListenAndServe("127.0.0.1:3000", restfulapp.NewHttpHandler())
+
+	//DecoratorWebApp
+
+	http.ListenAndServe("127.0.0.1:3000", decoratorwebapp.NewHttpHandler())
 }
