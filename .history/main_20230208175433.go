@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 	"time"
 
@@ -32,22 +31,8 @@ func addUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err)
 		return
 	}
-	user.CreatedAt = time.Now()
-	w.Header().Add("Content-type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	data, _ := json.Marshal(user)
-	fmt.Fprint(w, string(data))
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.New("Hello").ParseFiles("hello.tmpl")
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, err)
-		return
-	}
-	tmpl.ExecuteTemplate(w.Body)
-}
 func main() {
 	// httpApp
 	// http.ListenAndServe("127.0.0.1:3000", httpApp.NewHttpHandler())
@@ -67,7 +52,6 @@ func main() {
 	mux := pat.New()
 	mux.Get("/users", getUserInfoHandler)
 	mux.Post("/users", addUserInfoHandler)
-	mux.Get("/helloHandler", helloHandler)
 
 	http.ListenAndServe("127.0.0.1:3000", mux)
 }
