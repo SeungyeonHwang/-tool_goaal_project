@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 
-	"github.com/antage/eventsource"
 	"github.com/gorilla/pat"
 	"github.com/urfave/negroni"
 )
@@ -19,14 +18,8 @@ func sendMessage(name, msg string) {
 }
 
 func main() {
-	es := eventsource.New(nil, nil)
-	defer es.Close()
-
 	mux := pat.New()
 	mux.Post("/messages", postMessageHandler)
-	mux.Handle("/stream", es)
-
-	es.SendEventMessage()
 
 	n := negroni.Classic()
 	n.UseHandler(mux)

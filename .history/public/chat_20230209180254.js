@@ -26,21 +26,4 @@ $(function () {
         $chatmsg.val("")
         $chatmsg.focus()
     });
-
-    var addMessage = function(data) {
-        var text = "";
-        if (!isBlank(data.name)) {
-            text = '<strong>' + data.name + ':</strong> ';
-        }
-        text += data.msg
-        $chatlog.prepend('<div><span>' + text + '</sapn></div>');
-    };
-
-    var es = new EventSource('/stream')
-    es.onopen = function(e) {
-        $post('users/', {
-            name : username
-        });
-    }
-
 })

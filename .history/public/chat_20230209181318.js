@@ -28,19 +28,11 @@ $(function () {
     });
 
     var addMessage = function(data) {
-        var text = "";
+        var text;
         if (!isBlank(data.name)) {
-            text = '<strong>' + data.name + ':</strong> ';
+            text = '<strong>' + data.name + ':</strong> '
         }
         text += data.msg
-        $chatlog.prepend('<div><span>' + text + '</sapn></div>');
-    };
-
-    var es = new EventSource('/stream')
-    es.onopen = function(e) {
-        $post('users/', {
-            name : username
-        });
+        $chatlog.prepend('<div><span>' + text + '</sapn></div>')
     }
-
 })

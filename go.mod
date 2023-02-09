@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gorilla/context v1.1.1 // indirect

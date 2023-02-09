@@ -37,7 +37,7 @@ $(function () {
     };
 
     var es = new EventSource('/stream')
-    es.onopen = function(e) {
+    es.onopen = fuction(e){
         $post('users/', {
             name : username
         });

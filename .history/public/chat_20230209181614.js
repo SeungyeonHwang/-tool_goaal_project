@@ -36,11 +36,12 @@ $(function () {
         $chatlog.prepend('<div><span>' + text + '</sapn></div>');
     };
 
-    var es = new EventSource('/stream')
-    es.onopen = function(e) {
-        $post('users/', {
-            name : username
-        });
-    }
+    addMessage({
+        msg: "hello",
+        name: 'aaa'
+    })
 
+    addMessage({
+        msg: "hello2"
+    })
 })
