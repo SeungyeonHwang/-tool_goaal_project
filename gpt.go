@@ -1,1 +1,0 @@
-//github.com/unrolled/render rnder.Render.HTML() multiple file path or nested filepath example

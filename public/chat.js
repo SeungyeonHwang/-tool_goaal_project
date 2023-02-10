@@ -49,12 +49,12 @@ $(function () {
         addMessage(msg);
     };
 
-    //NotWorking
-    window.onbeforeunload = function(e) {
+    window.addEventListener('beforeunload', (event) => {
+        event.returnValue = '';
         $.ajax({
             url: "/users?username=" + username,
             type: "DELETE"
         });
         es.close()
-    };
+    });
 })

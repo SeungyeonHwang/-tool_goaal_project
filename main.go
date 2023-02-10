@@ -8,11 +8,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/SeungyeonHwang/tool-goaal/public/oauth"
 	"github.com/antage/eventsource"
 	"github.com/gorilla/pat"
 	"github.com/urfave/negroni"
 )
 
+// Chat
 func postMessageHandler(w http.ResponseWriter, r *http.Request) {
 	msg := r.FormValue("msg")
 	name := r.FormValue("name")
@@ -44,26 +46,32 @@ func addUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func leftUserHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("TEST")
+	log.Println("leftUserHandler Called")
 	username := r.FormValue("username")
 	sendMessage("", fmt.Sprintf("left user: %s", username))
 }
 
+// OAuth
+
 func main() {
-	msgCh = make(chan Message)
-	es := eventsource.New(nil, nil)
-	defer es.Close()
-
-	go processMsgCh(es)
-
 	mux := pat.New()
-	mux.Handle("/stream", es)
-	mux.Post("/messages", postMessageHandler)
-	mux.Post("/users", addUserHandler)
-	mux.Delete("/users", leftUserHandler)
+
+	//Oauth
+	mux.HandleFunc("/auth/google/login", oauth.GoogleLoginHandler)
+	mux.HandleFunc("/auth/google/callback", oauth.GoogleAuthCallback)
+
+	//Chat
+	// msgCh = make(chan Message)
+	// es := eventsource.New(nil, nil)
+	// defer es.Close()
+	// go processMsgCh(es)
+
+	// mux.Handle("/stream", es)
+	// mux.Post("/messages", postMessageHandler)
+	// mux.Post("/users", addUserHandler)
+	// mux.Delete("/users", leftUserHandler)
 
 	n := negroni.Classic()
 	n.UseHandler(mux)
-
 	http.ListenAndServe("127.0.0.1:3000", n)
 }
