@@ -40,7 +40,7 @@ $(function () {
 
     var es = new EventSource("/stream");
     es.onopen = function (e) {
-        $.post("/users", {
+        $.post("users/", {
             name: username,
         });
     };
@@ -49,12 +49,11 @@ $(function () {
         addMessage(msg);
     };
 
-    //NotWorking
-    window.onbeforeunload = function(e) {
+    window.onbeforeunload = function () {
         $.ajax({
             url: "/users?username=" + username,
-            type: "DELETE"
+            type: "DELETE",
         });
-        es.close()
+        es.close();
     };
-})
+});

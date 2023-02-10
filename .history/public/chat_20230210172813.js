@@ -1,6 +1,5 @@
 $(function () {
     if (!window.EventSource) {
-        //Internet Explore Only
         alert("No EventSource");
         return;
     }
@@ -40,7 +39,7 @@ $(function () {
 
     var es = new EventSource("/stream");
     es.onopen = function (e) {
-        $.post("/users", {
+        $.post("users/", {
             name: username,
         });
     };
@@ -49,12 +48,11 @@ $(function () {
         addMessage(msg);
     };
 
-    //NotWorking
-    window.onbeforeunload = function(e) {
+    window.onbeforeunload = function (e) {
         $.ajax({
             url: "/users?username=" + username,
-            type: "DELETE"
+            type: "DELETE",
         });
-        es.close()
+        es.close();
     };
-})
+});

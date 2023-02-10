@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -44,7 +43,6 @@ func addUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func leftUserHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("TEST")
 	username := r.FormValue("username")
 	sendMessage("", fmt.Sprintf("left user: %s", username))
 }

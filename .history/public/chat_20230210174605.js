@@ -49,7 +49,6 @@ $(function () {
         addMessage(msg);
     };
 
-    //NotWorking
     window.onbeforeunload = function(e) {
         $.ajax({
             url: "/users?username=" + username,

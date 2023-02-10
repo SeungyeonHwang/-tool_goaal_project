@@ -49,8 +49,7 @@ $(function () {
         addMessage(msg);
     };
 
-    //NotWorking
-    window.onbeforeunload = function(e) {
+    window.onbeforeunload = function() {
         $.ajax({
             url: "/users?username=" + username,
             type: "DELETE"

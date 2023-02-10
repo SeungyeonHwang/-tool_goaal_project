@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>event source test</title>
+  </head>
+  <body>
+    <div id="events">
+
+    </div>
+    <script type="text/javascript">
+      console.log("hello")
+      var source = new EventSource("//localhost:9000/events", { withCredentials: true });
+      source.onmessage = function(e) {
+        console.log(e);
+        var elem = document.createElement("div");
+        elem.innerHTML = "event: " + e.data;
+        events.appendChild(elem);
+        window.last = e;
+      };
+      source.onerror = function(err) {
+        console.warn(err);
+      };
+      source.onclose = function(err) {
+        console.info("closed", err);
+      };
+      setTimeout(function() {
+        source.close();
+      }, 5000)
+    </script>
+  </body>
+</html>

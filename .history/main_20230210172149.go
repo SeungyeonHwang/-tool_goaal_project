@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -43,12 +42,6 @@ func addUserHandler(w http.ResponseWriter, r *http.Request) {
 	sendMessage("", fmt.Sprintf("add user: %s", username))
 }
 
-func leftUserHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("TEST")
-	username := r.FormValue("username")
-	sendMessage("", fmt.Sprintf("left user: %s", username))
-}
-
 func main() {
 	msgCh = make(chan Message)
 	es := eventsource.New(nil, nil)
@@ -57,10 +50,9 @@ func main() {
 	go processMsgCh(es)
 
 	mux := pat.New()
-	mux.Handle("/stream", es)
 	mux.Post("/messages", postMessageHandler)
+	mux.Handle("/stream", es)
 	mux.Post("/users", addUserHandler)
-	mux.Delete("/users", leftUserHandler)
 
 	n := negroni.Classic()
 	n.UseHandler(mux)
