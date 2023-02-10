@@ -16,6 +16,14 @@ import (
 
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
+var googleOauthConfig = oauth2.Config{
+	RedirectURL:  "http://localhost:3000/auth/google/callback",
+	ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
+	ClientSecret: "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",
+	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+	Endpoint:     google.Endpoint,
+}
+
 func getGoogleUserInfo(code string) ([]byte, error) {
 	token, err := googleOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
@@ -30,20 +38,6 @@ func getGoogleUserInfo(code string) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-var googleOauthConfig = oauth2.Config{
-	RedirectURL:  "http://localhost:3000/auth/google/callback",
-	ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
-	ClientSecret: "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",
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-	Endpoint:     google.Endpoint,
-}
-
-func GoogleLoginHandler(w http.ResponseWriter, r *http.Request) {
-	state := generateStateOauthCookie(w)
-	url := googleOauthConfig.AuthCodeURL(state)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
 func generateStateOauthCookie(w http.ResponseWriter) string {
 	expiration := time.Now().Add(1 * 24 * time.Hour)
 
@@ -53,6 +47,12 @@ func generateStateOauthCookie(w http.ResponseWriter) string {
 	cookie := &http.Cookie{Name: "oauthstate", Value: state, Expires: expiration}
 	http.SetCookie(w, cookie)
 	return state
+}
+
+func GoogleLoginHandler(w http.ResponseWriter, r *http.Request) {
+	state := generateStateOauthCookie(w)
+	url := googleOauthConfig.AuthCodeURL(state)
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func GoogleAuthCallback(w http.ResponseWriter, r *http.Request) {
