@@ -36,7 +36,7 @@
                 complete = false;
             }
             $.get("/complete-todo/" + id + "?complete=" + complete, function (data) {
-                if(complete) {
+                if (complete) {
                     $self.attr('checked', 'checked');
                 } else {
                     $self.removeAttr('checked');

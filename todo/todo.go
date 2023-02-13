@@ -41,7 +41,7 @@ func addTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	todo := &Todo{id, name, false, time.Now()}
 	todoMap[id] = todo
-	rd.JSON(w, http.StatusOK, todo)
+	rd.JSON(w, http.StatusCreated, todo)
 }
 
 func removeTodoListHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,9 +58,9 @@ func removeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 func completeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	compete := r.FormValue("complete") == "true"
+	complete := r.FormValue("complete") == "true"
 	if todo, ok := todoMap[id]; ok {
-		todo.Completed = compete
+		todo.Completed = complete
 		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
 		rd.JSON(w, http.StatusOK, Success{false})
@@ -68,12 +68,14 @@ func completeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func MakeHandler() http.Handler {
-	todoMap = make(map[int]*Todo)
-
 	rd = render.New()
 	r := mux.NewRouter()
 
+	//HOME
 	r.HandleFunc("/", indexHandler)
+
+	//TODO
+	todoMap = make(map[int]*Todo)
 	r.HandleFunc("/todos", getTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos", addTodoListHandler).Methods("POST")
 	r.HandleFunc("/todos/{id:[0-9]+}", removeTodoListHandler).Methods("DELETE")
