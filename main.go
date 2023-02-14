@@ -10,7 +10,6 @@ import (
 
 	"github.com/SeungyeonHwang/tool-goaal/todo"
 	"github.com/antage/eventsource"
-	"github.com/urfave/negroni"
 )
 
 // Chat
@@ -50,14 +49,8 @@ func leftUserHandler(w http.ResponseWriter, r *http.Request) {
 	sendMessage("", fmt.Sprintf("left user: %s", username))
 }
 
-// OAuth
-
 func main() {
 	// mux := pat.New()
-
-	// //Oauth
-	// mux.HandleFunc("/auth/google/login", oauth.GoogleLoginHandler)
-	// mux.HandleFunc("/auth/google/callback", oauth.GoogleAuthCallback)
 
 	//Chat
 	// msgCh = make(chan Message)
@@ -70,13 +63,11 @@ func main() {
 	// mux.Post("/users", addUserHandler)
 	// mux.Delete("/users", leftUserHandler)
 
-	m := todo.MakeHandler()
+	m := todo.MakeHandler("./db/todo.db")
+	defer m.Close()
 
-	n := negroni.Classic()
-	n.UseHandler(m)
-
-	log.Println("== Start Goaal App ==")
-	err := http.ListenAndServe("127.0.0.1:3000", n)
+	log.Println("Start Goaal App...")
+	err := http.ListenAndServe("127.0.0.1:3000", m)
 	if err != nil {
 		panic(err)
 	}
