@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"reflect"
 	"strconv"
 	"testing"
@@ -16,7 +15,7 @@ import (
 )
 
 func TestTodos(t *testing.T) {
-	os.Remove("./db/test_todo.db")
+	// os.Remove("./db/test_todo.db")
 	assert := assert.New(t)
 	ah := MakeHandler("./db/test_todo.db")
 	defer ah.Close()
