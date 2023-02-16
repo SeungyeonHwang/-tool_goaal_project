@@ -6,7 +6,7 @@ type memoryHandler struct {
 	todoMap map[int]*Todo
 }
 
-func (m *memoryHandler) GetTodos() []*Todo {
+func (m *memoryHandler) GetTodos(sessionId string) []*Todo {
 	list := []*Todo{}
 	for _, v := range m.todoMap {
 		list = append(list, v)
@@ -40,8 +40,8 @@ func (m *memoryHandler) CompleteTodo(id int, complete bool) bool {
 func (m *memoryHandler) Close() {
 }
 
-func newMemoryHandler() DBHandler {
-	m := &memoryHandler{}
-	m.todoMap = make(map[int]*Todo)
-	return m
-}
+// func newMemoryHandler() DBHandler {
+// 	m := &memoryHandler{}
+// 	m.todoMap = make(map[int]*Todo)
+// 	return m
+// }

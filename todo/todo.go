@@ -27,13 +27,15 @@ func (a *AppHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *AppHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
-	list := a.db.GetTodos()
+	sessionId := login.GetSessionId(r)
+	list := a.db.GetTodos(sessionId)
 	rd.JSON(w, http.StatusOK, list)
 }
 
 func (a *AppHandler) addTodoListHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := login.GetSessionId(r)
 	name := r.FormValue("name")
-	todo := a.db.AddTodo(name)
+	todo := a.db.AddTodo(sessionId, name)
 	rd.JSON(w, http.StatusCreated, todo)
 }
 

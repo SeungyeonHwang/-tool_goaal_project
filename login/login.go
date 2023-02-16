@@ -48,7 +48,7 @@ func CheckLogin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	}
 
 	// if user already signin
-	sessionId := getSessionId(r)
+	sessionId := GetSessionId(r)
 	if sessionId != "" {
 		next(w, r)
 		return
@@ -57,7 +57,7 @@ func CheckLogin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	http.Redirect(w, r, "/login/login.html", http.StatusTemporaryRedirect)
 }
 
-func getSessionId(r *http.Request) string {
+var GetSessionId = func(r *http.Request) string {
 	session, err := store.Get(r, "session")
 	if err != nil {
 		return ""
