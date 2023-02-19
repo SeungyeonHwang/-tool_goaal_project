@@ -29,3 +29,7 @@ chat gpt
 간단한 메모 , 파일 붙이기
 
 -> 파일 업로드 / 투두 정보  AWS 로 올리기
+
+
+-------------
+https://salty-hamlet-77528.herokuapp.com/
