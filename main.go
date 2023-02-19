@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -50,7 +51,7 @@ func leftUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 	// mux := pat.New()
 
 	//Chat
@@ -68,8 +69,8 @@ func main() {
 	defer m.Close()
 
 	log.Println("Start Goaal App...")
-	// err := http.ListenAndServe(":"+port, m)
-	err := http.ListenAndServe("127.0.0.1:3000", m)
+	err := http.ListenAndServe(":"+port, m)
+	// err := http.ListenAndServe("127.0.0.1:3000", m)
 	if err != nil {
 		panic(err)
 	}
