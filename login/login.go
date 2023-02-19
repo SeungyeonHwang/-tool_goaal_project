@@ -21,7 +21,7 @@ import (
 // env(session key)
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
-var store = sessions.NewCookieStore([]byte(os.Getenv("0953bf69-4a51-4038-ad37-e84429b6fbc8")))
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 type GoogleUserId struct {
 	Id            string `json:"id"`
@@ -32,9 +32,9 @@ type GoogleUserId struct {
 
 // TODO : env
 var googleOauthConfig = oauth2.Config{
-	RedirectURL:  "http://localhost:3000/auth/google/callback",
-	ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
-	ClientSecret: "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",
+	RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
+	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+	ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
 	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 	Endpoint:     google.Endpoint,
 }
