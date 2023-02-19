@@ -15,11 +15,27 @@
         });
 
         var addItem = function (item) {
-            if (item.completed) {
-                todoListItem.append("<li class='completed'" + " id='" + item.id + "'><div class='form-check'><label class='form-check-label'><input class='checkbox' type='checkbox' checked='checked' />" + item.name + "<i class='input-helper'></i></label></div><i class='remove mdi mdi-close-circle-outline'></i></li>");
-            } else {
-                todoListItem.append("<li" + " id='" + item.id + "'><div class='form-check'><label class='form-check-label'><input class='checkbox' type='checkbox'/>" + item.name + "<i class='input-helper'></i></label></div><i class='remove mdi mdi-close-circle-outline'></i></li>");
-            }
+            var completedClass = item.completed ? "completed" : "";
+            var listItemHtml =
+                "<li class='" +
+                completedClass +
+                "' id='" +
+                item.id +
+                "' style='display: flex; justify-content: space-between;'>" +
+                "<div class='profile-image-container' style='margin-right: 10px;'>" +
+                "<img class='profile-image' src=https://picsum.photos/100/100 style= width:30px; height:30px;/>" +
+                "</div>" +
+                "<div style='align-self: center; flex: 1;'>" +
+                "<div class='form-check'>" +
+                "<label class='form-check-label'>" +
+                "<input class='checkbox' type='checkbox'" +
+                (item.completed ? " checked='checked'" : "") +
+                "/>" +
+                item.name +
+                "<i class='input-helper'></i></label></div></div>" +
+                "<i class='remove mdi mdi-close-circle-outline'></i>" +
+                "</li>";
+            todoListItem.append(listItemHtml);
         };
 
         $.get('/todos', function (items) {

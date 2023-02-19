@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -32,11 +33,16 @@ func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 	return todos
 }
 
-func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
-	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, datetime('now'))")
+func (s *sqliteHandler) AddTodo(sessionId string, name string, userInfo map[string]interface{}) *Todo {
+	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, picture, ompleted, createdAt) VALUES (?, ?, ?, datetime('now'))")
 	if err != nil {
 		panic(err)
 	}
+	picture := userInfo["picture"]
+	email := userInfo["email"]
+
+	log.Println(picture)
+	log.Println(email)
 	rs, err := stmt.Exec(sessionId, name, false)
 	if err != nil {
 		panic(err)
@@ -45,6 +51,8 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 	var todo Todo
 	todo.Id = int(id)
 	todo.Name = name
+	todo.Picture = picture.(string)
+	todo.Email = email.(string)
 	todo.Completed = false
 	todo.CreatedAt = time.Now()
 	return &todo
@@ -86,6 +94,8 @@ func newSqliteHandler(dbDir string) DBHandler {
 			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
 			sessionId STRING,
 			name      TEXT,
+			picture STRING,
+			email STRING,
 			completed BOOLEAN,
 			createdAt DATETIME
 		);

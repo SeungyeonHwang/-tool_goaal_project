@@ -34,8 +34,9 @@ func (a *AppHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) 
 
 func (a *AppHandler) addTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
+	userInfo := login.GetUserInfo(r)
 	name := r.FormValue("name")
-	todo := a.db.AddTodo(sessionId, name)
+	todo := a.db.AddTodo(sessionId, name, userInfo)
 	rd.JSON(w, http.StatusCreated, todo)
 }
 
@@ -94,6 +95,8 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/todos", a.addTodoListHandler).Methods("POST")
 	r.HandleFunc("/todos/{id:[0-9]+}", a.removeTodoListHandler).Methods("DELETE")
 	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.completeTodoListHandler).Methods("GET")
+
+	//CHAT
 
 	return a
 }

@@ -5,7 +5,9 @@ go 1.19
 require (
 	github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/pat v1.0.1
 	github.com/gorilla/sessions v1.2.1
+	github.com/gorilla/websocket v1.5.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/stretchr/testify v1.8.1
 	github.com/unrolled/render v1.5.0
@@ -19,6 +21,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.6.0 // indirect

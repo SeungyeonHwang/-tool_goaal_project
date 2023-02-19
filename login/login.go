@@ -18,7 +18,6 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-// env(session key)
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
@@ -30,11 +29,13 @@ type GoogleUserId struct {
 	Picture       string `json:"picture"`
 }
 
-// TODO : env
 var googleOauthConfig = oauth2.Config{
-	RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
-	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-	ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
+	// RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
+	// ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+	// ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
+	RedirectURL:  "http://localhost:3000/auth/google/callback",
+	ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
+	ClientSecret: "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",
 	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 	Endpoint:     google.Endpoint,
 }
@@ -67,7 +68,27 @@ var GetSessionId = func(r *http.Request) string {
 	if val == nil {
 		return ""
 	}
+
 	return val.(string)
+}
+
+var GetUserInfo = func(r *http.Request) map[string]interface{} {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		return map[string]interface{}{}
+	}
+
+	email := session.Values["email"]
+	if email == nil {
+		return map[string]interface{}{}
+	}
+
+	picture := session.Values["picture"]
+
+	return map[string]interface{}{
+		"email":   email,
+		"picture": picture,
+	}
 }
 
 func getGoogleUserInfo(code string) ([]byte, error) {

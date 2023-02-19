@@ -451,3 +451,14 @@ input[type="checkbox"] {
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown .dropdown-item {
     display: flex !important
 }
+
+.profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.profile-image-container {
+    display: flex;
+    align-items: center;
+}
