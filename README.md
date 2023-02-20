@@ -30,6 +30,7 @@ chat gpt
 
 -> 파일 업로드 / 투두 정보  AWS 로 올리기
 
+Go doc 사용
 
 -------------
 https://salty-hamlet-77528.herokuapp.com/

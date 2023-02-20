@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SeungyeonHwang/tool-goaal/model"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -21,6 +22,10 @@ import (
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
+type LoginHandler struct {
+	db model.DBHandler
+}
 
 type GoogleUserId struct {
 	Id            string `json:"id"`
@@ -70,25 +75,6 @@ var GetSessionId = func(r *http.Request) string {
 	}
 
 	return val.(string)
-}
-
-var GetUserInfo = func(r *http.Request) map[string]interface{} {
-	session, err := store.Get(r, "session")
-	if err != nil {
-		return map[string]interface{}{}
-	}
-
-	email := session.Values["email"]
-	if email == nil {
-		return map[string]interface{}{}
-	}
-
-	picture := session.Values["picture"]
-
-	return map[string]interface{}{
-		"email":   email,
-		"picture": picture,
-	}
 }
 
 func getGoogleUserInfo(code string) ([]byte, error) {
@@ -165,6 +151,14 @@ func GoogleAuthCallback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	l := &LoginHandler{
+		db: model.NewDBHandler("./db/main.db"),
+	}
+
+	l.db.AddUser(userInfo.Id, userInfo.Email, userInfo.Picture)
+	l.db.Close()
+
 	//redirect to main
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }

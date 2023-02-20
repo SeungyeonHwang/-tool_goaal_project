@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -18,7 +17,11 @@ func (s *sqliteHandler) Close() {
 
 func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 	todos := []*Todo{}
-	rows, err := s.db.Query("SELECT id, name, completed, createdAt FROM todos WHERE sessionId=?", sessionId)
+	rows, err := s.db.Query(`
+        SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+        FROM todos
+        JOIN user ON todos.sessionId = user.sessionId
+        WHERE todos.sessionId = ?`, sessionId)
 
 	if err != nil {
 		panic(err)
@@ -27,22 +30,18 @@ func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 
 	for rows.Next() {
 		var todo Todo
-		rows.Scan(&todo.Id, &todo.Name, &todo.Completed, &todo.CreatedAt)
+		rows.Scan(&todo.Id, &todo.Name, &todo.Picture, &todo.Completed, &todo.CreatedAt)
 		todos = append(todos, &todo)
 	}
 	return todos
 }
 
-func (s *sqliteHandler) AddTodo(sessionId string, name string, userInfo map[string]interface{}) *Todo {
-	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, picture, ompleted, createdAt) VALUES (?, ?, ?, datetime('now'))")
+func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
+	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, datetime('now'))")
 	if err != nil {
 		panic(err)
 	}
-	picture := userInfo["picture"]
-	email := userInfo["email"]
 
-	log.Println(picture)
-	log.Println(email)
 	rs, err := stmt.Exec(sessionId, name, false)
 	if err != nil {
 		panic(err)
@@ -51,8 +50,13 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string, userInfo map[stri
 	var todo Todo
 	todo.Id = int(id)
 	todo.Name = name
-	todo.Picture = picture.(string)
-	todo.Email = email.(string)
+
+	row := s.db.QueryRow("SELECT picture FROM user WHERE sessionId = ?", sessionId)
+	err = row.Scan(&todo.Picture)
+	if err != nil {
+		panic(err)
+	}
+
 	todo.Completed = false
 	todo.CreatedAt = time.Now()
 	return &todo
@@ -84,6 +88,24 @@ func (s *sqliteHandler) RemoveTodo(id int) bool {
 	return cnt > 0
 }
 
+func (s *sqliteHandler) AddUser(sessionId string, email string, picture string) {
+	stmt, err := s.db.Prepare(
+		`INSERT INTO user (sessionId, email, picture, createdAt)
+			SELECT ?, ?, ?, datetime('now')
+			WHERE NOT EXISTS (
+				SELECT sessionId FROM user WHERE sessionId = ?
+		);
+		`)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = stmt.Exec(sessionId, email, picture, sessionId)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func newSqliteHandler(dbDir string) DBHandler {
 	database, err := sql.Open("sqlite3", dbDir)
 	if err != nil {
@@ -94,14 +116,23 @@ func newSqliteHandler(dbDir string) DBHandler {
 			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
 			sessionId STRING,
 			name      TEXT,
-			picture STRING,
-			email STRING,
 			completed BOOLEAN,
 			createdAt DATETIME
 		);
 		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
 			sessionId ASC
 		)`)
+	statement.Exec()
+
+	statement, _ = database.Prepare(
+		`CREATE TABLE IF NOT EXISTS user (
+			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
+			sessionId STRING,
+			email     TEXT,
+			picture   TEXT,
+			createdAt DATETIME
+		);
+		`)
 	statement.Exec()
 	return &sqliteHandler{db: database}
 }

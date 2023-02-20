@@ -13,7 +13,7 @@ import (
 
 var rd *render.Render = render.New()
 
-type AppHandler struct {
+type TodoHandler struct {
 	http.Handler
 	db model.DBHandler
 }
@@ -22,28 +22,27 @@ type Success struct {
 	Success bool `json:"success"`
 }
 
-func (a *AppHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "todo/todo.html", http.StatusTemporaryRedirect)
 }
 
-func (a *AppHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
-	list := a.db.GetTodos(sessionId)
+	list := t.db.GetTodos(sessionId)
 	rd.JSON(w, http.StatusOK, list)
 }
 
-func (a *AppHandler) addTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) addTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
-	userInfo := login.GetUserInfo(r)
 	name := r.FormValue("name")
-	todo := a.db.AddTodo(sessionId, name, userInfo)
+	todo := t.db.AddTodo(sessionId, name)
 	rd.JSON(w, http.StatusCreated, todo)
 }
 
-func (a *AppHandler) removeTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) removeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	ok := a.db.RemoveTodo(id)
+	ok := t.db.RemoveTodo(id)
 	if ok {
 		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
@@ -51,11 +50,11 @@ func (a *AppHandler) removeTodoListHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (a *AppHandler) completeTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) completeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	complete := r.FormValue("complete") == "true"
-	ok := a.db.CompleteTodo(id, complete)
+	ok := t.db.CompleteTodo(id, complete)
 	if ok {
 		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
@@ -63,11 +62,11 @@ func (a *AppHandler) completeTodoListHandler(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-func (a *AppHandler) Close() {
-	a.db.Close()
+func (t *TodoHandler) Close() {
+	t.db.Close()
 }
 
-func MakeHandler(dbDir string) *AppHandler {
+func MakeHandler(dbDir string) *TodoHandler {
 	r := mux.NewRouter()
 	n := negroni.New(
 		negroni.NewRecovery(),
@@ -75,28 +74,26 @@ func MakeHandler(dbDir string) *AppHandler {
 		negroni.HandlerFunc(login.CheckLogin),
 		negroni.NewStatic(http.Dir("public")),
 	)
-	//middleware => session id check
+
 	n.UseHandler(r)
 
-	a := &AppHandler{
+	t := &TodoHandler{
 		Handler: n,
 		db:      model.NewDBHandler(dbDir),
 	}
 
 	//HOME
-	r.HandleFunc("/", a.indexHandler)
+	r.HandleFunc("/", t.indexHandler)
 
 	//LOGIN
 	r.HandleFunc("/auth/google/login", login.GoogleLoginHandler)
 	r.HandleFunc("/auth/google/callback", login.GoogleAuthCallback)
 
 	//TODO
-	r.HandleFunc("/todos", a.getTodoListHandler).Methods("GET")
-	r.HandleFunc("/todos", a.addTodoListHandler).Methods("POST")
-	r.HandleFunc("/todos/{id:[0-9]+}", a.removeTodoListHandler).Methods("DELETE")
-	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.completeTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos", t.addTodoListHandler).Methods("POST")
+	r.HandleFunc("/todos/{id:[0-9]+}", t.removeTodoListHandler).Methods("DELETE")
+	r.HandleFunc("/complete-todo/{id:[0-9]+}", t.completeTodoListHandler).Methods("GET")
 
-	//CHAT
-
-	return a
+	return t
 }

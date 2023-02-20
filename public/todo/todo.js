@@ -15,7 +15,9 @@
         });
 
         var addItem = function (item) {
+            console.log(item.picture);
             var completedClass = item.completed ? "completed" : "";
+            var picture = item.picture ? item.picture : "";
             var listItemHtml =
                 "<li class='" +
                 completedClass +
@@ -23,7 +25,7 @@
                 item.id +
                 "' style='display: flex; justify-content: space-between;'>" +
                 "<div class='profile-image-container' style='margin-right: 10px;'>" +
-                "<img class='profile-image' src=https://picsum.photos/100/100 style= width:30px; height:30px;/>" +
+                "<img class='profile-image' src='" + picture + "' style='width:30px; height:30px;'/>" +
                 "</div>" +
                 "<div style='align-self: center; flex: 1;'>" +
                 "<div class='form-check'>" +
