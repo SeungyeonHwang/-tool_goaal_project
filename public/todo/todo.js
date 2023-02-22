@@ -18,6 +18,7 @@
             console.log(item.picture);
             var completedClass = item.completed ? "completed" : "";
             var picture = item.picture ? item.picture : "";
+            var createdAt = item.created_at;
             var listItemHtml =
                 "<li class='" +
                 completedClass +
@@ -35,6 +36,7 @@
                 "/>" +
                 item.name +
                 "<i class='input-helper'></i></label></div></div>" +
+                "<span class='createdAt' style='margin-right: 10px; color: #999;'>" + createdAt + "</span>" +
                 "<i class='remove mdi mdi-close-circle-outline'></i>" +
                 "</li>";
             todoListItem.append(listItemHtml);

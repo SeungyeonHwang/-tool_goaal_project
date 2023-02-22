@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/leekchan/timeutil"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -37,12 +38,18 @@ func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 }
 
 func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
-	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, datetime('now'))")
+	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		panic(err)
 	}
 
-	rs, err := stmt.Exec(sessionId, name, false)
+	n := time.Now()
+	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M")
+	if err != nil {
+		panic(err)
+	}
+
+	rs, err := stmt.Exec(sessionId, name, false, formattedTime)
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +65,7 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 	}
 
 	todo.Completed = false
-	todo.CreatedAt = time.Now()
+	todo.CreatedAt = formattedTime
 	return &todo
 }
 
@@ -117,7 +124,7 @@ func newSqliteHandler(dbDir string) DBHandler {
 			sessionId STRING,
 			name      TEXT,
 			completed BOOLEAN,
-			createdAt DATETIME
+			createdAt STRING
 		);
 		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
 			sessionId ASC
@@ -130,9 +137,11 @@ func newSqliteHandler(dbDir string) DBHandler {
 			sessionId STRING,
 			email     TEXT,
 			picture   TEXT,
-			createdAt DATETIME
+			createdAt STRING
 		);
-		`)
+		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
+			sessionId ASC
+		)`)
 	statement.Exec()
 	return &sqliteHandler{db: database}
 }

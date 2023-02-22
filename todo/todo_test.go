@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
-	"reflect"
 	"strconv"
 	"testing"
 
@@ -38,7 +37,6 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(todo.Id, 1)
 	assert.Equal(todo.Name, "Test Data1")
-	assert.Equal(reflect.ValueOf(todo.CreatedAt).String(), "<time.Time Value>")
 	id1 := todo.Id
 
 	resp, err = http.PostForm(ts.URL+"/todos", url.Values{"name": {"Test Data2"}})
@@ -48,7 +46,6 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(todo.Id, 2)
 	assert.Equal(todo.Name, "Test Data2")
-	assert.Equal(reflect.ValueOf(todo.CreatedAt).String(), "<time.Time Value>")
 	id2 := todo.Id
 
 	//getTodoListHandlerTest

@@ -1,15 +1,11 @@
 package model
 
-import (
-	"time"
-)
-
 type Todo struct {
-	Id        int       `json:"id"`
-	Name      string    `json:"name"`
-	Picture   string    `json:"picture"`
-	Completed bool      `json:"completed"`
-	CreatedAt time.Time `json:"created_at"`
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Picture   string `json:"picture"`
+	Completed bool   `json:"completed"`
+	CreatedAt string `json:"created_at"`
 }
 
 type DBHandler interface {
