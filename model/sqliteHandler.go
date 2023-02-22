@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"math"
 	"time"
 
 	"github.com/leekchan/timeutil"
@@ -16,13 +17,9 @@ func (s *sqliteHandler) Close() {
 	s.db.Close()
 }
 
-func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
+func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
 	todos := []*Todo{}
-	rows, err := s.db.Query(`
-        SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
-        FROM todos
-        JOIN user ON todos.sessionId = user.sessionId
-        WHERE todos.sessionId = ?`, sessionId)
+	rows, err := s.db.Query(query, sessionId)
 
 	if err != nil {
 		panic(err)
@@ -35,6 +32,44 @@ func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 		todos = append(todos, &todo)
 	}
 	return todos
+}
+
+func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
+	query := `
+        SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+        FROM todos
+        JOIN user ON todos.sessionId = user.sessionId
+        WHERE todos.sessionId = ?`
+	return s.getTodosList(query, sessionId)
+}
+
+// TODO
+func (s *sqliteHandler) GetTodosSortedByUser(sessionId string) []*Todo {
+	query := `
+		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+		FROM todos
+		JOIN user ON todos.sessionId = user.sessionId
+		WHERE todos.sessionId = ?`
+	return s.getTodosList(query, sessionId)
+}
+
+func (s *sqliteHandler) GetTodosSortedByTime(sessionId string) []*Todo {
+	query := `
+		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+		FROM todos
+		JOIN user ON todos.sessionId = user.sessionId
+		WHERE todos.sessionId = ?
+		ORDER BY todos.createdAt DESC`
+	return s.getTodosList(query, sessionId)
+}
+
+func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string) []*Todo {
+	query := `
+		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+		FROM todos
+		JOIN user ON todos.sessionId = user.sessionId
+		WHERE todos.sessionId = ? AND todos.completed = 1`
+	return s.getTodosList(query, sessionId)
 }
 
 func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
@@ -93,6 +128,30 @@ func (s *sqliteHandler) RemoveTodo(id int) bool {
 	}
 	cnt, _ := rs.RowsAffected()
 	return cnt > 0
+}
+
+func (s *sqliteHandler) GetProgress(sessionId string) int {
+	rows, err := s.db.Query(`
+		SELECT 
+		COUNT(*) AS total_count, 
+		COUNT(CASE WHEN completed = 1 THEN 1 ELSE NULL END) AS completed_count 
+		FROM todos 
+		WHERE sessionId = ?`, sessionId)
+	if err != nil {
+		panic(err)
+	}
+
+	var totalCount, completedCount int
+	if rows.Next() {
+		if err := rows.Scan(&totalCount, &completedCount); err != nil {
+			panic(err)
+		}
+	}
+	defer rows.Close()
+	if totalCount == 0 {
+		return 0
+	}
+	return int(math.Floor(float64(completedCount) / float64(totalCount) * 100))
 }
 
 func (s *sqliteHandler) AddUser(sessionId string, email string, picture string) {

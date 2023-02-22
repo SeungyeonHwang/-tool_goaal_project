@@ -28,7 +28,19 @@ func (t *TodoHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func (t *TodoHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
-	list := t.db.GetTodos(sessionId)
+	var list = make([]*model.Todo, 0)
+
+	switch r.URL.Path {
+	case "/todos/sorted-by-user":
+		list = t.db.GetTodosSortedByUser(sessionId)
+	case "/todos/sorted-by-time":
+		list = t.db.GetTodosSortedByTime(sessionId)
+	case "/todos/sorted-by-completed":
+		list = t.db.GetTodosSortedByCompleted(sessionId)
+	default:
+		list = t.db.GetTodos(sessionId)
+	}
+
 	rd.JSON(w, http.StatusOK, list)
 }
 
@@ -62,6 +74,12 @@ func (t *TodoHandler) completeTodoListHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
+func (t *TodoHandler) getTodoProgressHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := login.GetSessionId(r)
+	progress := t.db.GetProgress(sessionId)
+	rd.JSON(w, http.StatusOK, progress)
+}
+
 func (t *TodoHandler) Close() {
 	t.db.Close()
 }
@@ -91,9 +109,15 @@ func MakeHandler(dbDir string) *TodoHandler {
 
 	//TODO
 	r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
-	r.HandleFunc("/todos", t.addTodoListHandler).Methods("POST")
-	r.HandleFunc("/todos/{id:[0-9]+}", t.removeTodoListHandler).Methods("DELETE")
+	r.HandleFunc("/todos/sorted-by-user", t.getTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted-by-time", t.getTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted-by-completed", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/complete-todo/{id:[0-9]+}", t.completeTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/progress", t.getTodoProgressHandler).Methods("GET")
+
+	r.HandleFunc("/todos", t.addTodoListHandler).Methods("POST")
+
+	r.HandleFunc("/todos/{id:[0-9]+}", t.removeTodoListHandler).Methods("DELETE")
 
 	return t
 }
