@@ -481,7 +481,6 @@ input[type="checkbox"] {
 .filter-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
 }
 
 .filter-btn {
@@ -495,4 +494,40 @@ input[type="checkbox"] {
 .filter-btn.active {
     background-color: #007bff;
     color: #fff;
+}
+
+.sort-section {
+    margin-left: auto;
+}
+
+.sort-btn {
+    background-color: transparent;
+    color: #000000;
+    border: none;
+    padding: 0;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+/* Arrow icons */
+.arrow-icon {
+    display: inline-block;
+    margin-left: 5px;
+    position: relative;
+    top: 2px;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px solid;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.up-arrow {
+    color: #007bff;
+}
+
+.down-arrow {
+    color: #007bff;
 }

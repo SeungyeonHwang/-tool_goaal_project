@@ -33,8 +33,6 @@ func (t *TodoHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request)
 	switch r.URL.Path {
 	case "/todos/sorted-by-user":
 		list = t.db.GetTodosSortedByUser(sessionId)
-	case "/todos/sorted-by-time":
-		list = t.db.GetTodosSortedByTime(sessionId)
 	case "/todos/sorted-by-completed":
 		list = t.db.GetTodosSortedByCompleted(sessionId)
 	default:
@@ -110,7 +108,6 @@ func MakeHandler(dbDir string) *TodoHandler {
 	//TODO
 	r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-user", t.getTodoListHandler).Methods("GET")
-	r.HandleFunc("/todos/sorted-by-time", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-completed", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/complete-todo/{id:[0-9]+}", t.completeTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/progress", t.getTodoProgressHandler).Methods("GET")

@@ -1,7 +1,7 @@
-    <!doctype html>
-    <html lang="en">
+<!doctype html>
+<html lang="en">
 
-    <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="todo.css">
 
     <title>Hello, world!</title>
-    </head>
+</head>
 
-    <body>
+<body>
     <div class="page-content page-container" id="page-content">
         <div class="padding">
             <div class="row container d-flex justify-content-center">
@@ -25,19 +25,24 @@
                             <h4 class="card-title">Awesome Todo list</h4>
                             <div class="add-items d-flex">
                                 <input type="text" class="form-control todo-list-input"
-                                    placeholder="What do you need to do today?"> <button
-                                    class="add btn btn-primary font-weight-bold todo-list-add-btn">Add</button>
+                                    placeholder="What do you need to do today?">
+                                <button class="add btn btn-primary font-weight-bold todo-list-add-btn">Add</button>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0"
                                     aria-valuemax="100"></div>
                             </div>
                         </div>
-                        <div class="filter-section">
+                        <div class="filter-section d-flex justify-content-center">
                             <button class="filter-btn active" data-filter="all">すべて</button>
                             <button class="filter-btn" data-filter="user">ユーザー</button>
-                            <button class="filter-btn" data-filter="time">古い順</button>
                             <button class="filter-btn" data-filter="completed">完了</button>
+                        </div>
+                        <div class="filter-section d-flex justify-content-end mr-3 py-1">
+                            <div class="sort-section d-flex">
+                                <button class="sort-btn up-arrow btn btn-primary" style=display:none;>&#9650;</button>
+                                <button class="sort-btn down-arrow btn btn-primary">&#9660;</button>
+                            </div>
                         </div>
                         <div class="list-wrapper">
                             <ul class="d-flex flex-column-reverse todo-list">
@@ -48,19 +53,21 @@
             </div>
         </div>
     </div>
-    </div>
+</body>
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-    <script src="todo.js"></script>
-    </body>
 
-    </html>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<script src="todo.js"></script>
+</body>
+
+</html>

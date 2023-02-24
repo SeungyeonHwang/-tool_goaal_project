@@ -11,7 +11,6 @@ type Todo struct {
 type DBHandler interface {
 	GetTodos(sessionId string) []*Todo
 	GetTodosSortedByUser(sessionId string) []*Todo
-	GetTodosSortedByTime(sessionId string) []*Todo
 	GetTodosSortedByCompleted(sessionId string) []*Todo
 	AddTodo(sessionId string, name string) *Todo
 

@@ -87,7 +87,7 @@
 
         $('.filter-btn').click(function () {
             $(this).addClass('active').siblings().removeClass('active');
-        
+
             var filter = $(this).data('filter');
             if (filter === 'user') {
                 sortByUser();
@@ -99,47 +99,52 @@
                 showAll();
             }
         });
-        
+
+        const upArrowBtn = document.querySelector('.up-arrow');
+        const downArrowBtn = document.querySelector('.down-arrow');
+
+        upArrowBtn.addEventListener('click', () => {
+            upArrowBtn.style.display = 'none';
+            downArrowBtn.style.display = 'block';
+        });
+
+        downArrowBtn.addEventListener('click', () => {
+            downArrowBtn.style.display = 'none';
+            upArrowBtn.style.display = 'block';
+        });
+
+
         function sortByUser() {
             $.get('/todos/sorted-by-user', function (items) {
-                clearList(); 
+                clearList();
                 items.forEach(e => {
                     addItem(e)
                 });
             });
         }
-        
-        function sortByTime() {
-            $.get('/todos/sorted-by-time', function (items) {
-                clearList(); 
-                items.forEach(e => {
-                    addItem(e)
-                });
-            });
-        }
-        
+
         function sortByCompleted() {
             $.get('/todos/sorted-by-completed', function (items) {
-                clearList(); 
+                clearList();
                 items.forEach(e => {
                     addItem(e)
                 });
             });
         }
-        
+
         function showAll() {
             $.get('/todos', function (items) {
-                clearList(); 
+                clearList();
                 items.forEach(e => {
                     addItem(e)
                 });
             });
         }
-        
+
         function clearList() {
             $('.todo-list').empty();
         }
-        
+
         function updateProgressBar() {
             $.get('/todos/progress', function (progress) {
                 $('.progress-bar').css('width', progress + '%');

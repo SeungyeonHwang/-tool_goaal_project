@@ -53,16 +53,6 @@ func (s *sqliteHandler) GetTodosSortedByUser(sessionId string) []*Todo {
 	return s.getTodosList(query, sessionId)
 }
 
-func (s *sqliteHandler) GetTodosSortedByTime(sessionId string) []*Todo {
-	query := `
-		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
-		FROM todos
-		JOIN user ON todos.sessionId = user.sessionId
-		WHERE todos.sessionId = ?
-		ORDER BY todos.createdAt DESC`
-	return s.getTodosList(query, sessionId)
-}
-
 func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
