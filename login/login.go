@@ -155,7 +155,6 @@ func GoogleAuthCallback(w http.ResponseWriter, r *http.Request) {
 	l := &LoginHandler{
 		db: model.NewDBHandler("./db/main.db"),
 	}
-
 	l.db.AddUser(userInfo.Id, userInfo.Email, userInfo.Picture)
 	l.db.Close()
 

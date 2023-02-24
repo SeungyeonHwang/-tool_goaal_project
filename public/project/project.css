@@ -24,16 +24,33 @@
     margin-left: 10px;
 }
 
-/* 참가 버튼의 스타일 */
 #join-project-btn {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #f2f2f2;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    cursor: pointer;
+    margin-top: 17px;
 }
 
 #join-project-btn:hover {
     background-color: #e2e2e2;
+}
+
+#project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
+    overflow-y: scroll
+}
+
+.project-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.project-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background-color: #f0ad4e;
 }
