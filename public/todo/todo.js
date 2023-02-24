@@ -1,5 +1,8 @@
 (function ($) {
     'use strict';
+
+    var filter = 'all';
+
     $(function () {
         var todoListItem = $('.todo-list');
         var todoListInput = $('.todo-list-input');
@@ -15,7 +18,6 @@
         });
 
         var addItem = function (item) {
-            console.log(item.picture);
             var completedClass = item.completed ? "completed" : "";
             var picture = item.picture ? item.picture : "";
             var createdAt = item.created_at;
@@ -88,16 +90,28 @@
         $('.filter-btn').click(function () {
             $(this).addClass('active').siblings().removeClass('active');
 
-            var filter = $(this).data('filter');
+            filter = $(this).data('filter');
             if (filter === 'user') {
                 sortByUser();
-            } else if (filter === 'time') {
-                sortByTime();
             } else if (filter === 'completed') {
                 sortByCompleted();
             } else {
                 showAll();
             }
+        });
+
+        $('.completed-clear-btn').click(function () {
+            $.ajax({
+                url: "/todos-completed-clear",
+                type: "DELETE",
+                success: function (data) {
+                    if (data.success) {
+                        $self.parent().remove();
+                        updateProgressBar();
+                        location.reload();
+                    }
+                }
+            })
         });
 
         const upArrowBtn = document.querySelector('.up-arrow');
@@ -106,13 +120,26 @@
         upArrowBtn.addEventListener('click', () => {
             upArrowBtn.style.display = 'none';
             downArrowBtn.style.display = 'block';
+            var sort = 'desc';
+            $.get('/todos/sorted', {filter: filter, sort: sort}, function (items) {
+                clearList();
+                items.forEach(e => {
+                    addItem(e)
+                });
+            });
         });
 
         downArrowBtn.addEventListener('click', () => {
             downArrowBtn.style.display = 'none';
             upArrowBtn.style.display = 'block';
+            var sort = 'asc';
+            $.get('/todos/sorted', {filter: filter, sort: sort}, function (items) {
+                clearList();
+                items.forEach(e => {
+                    addItem(e)
+                });
+            });
         });
-
 
         function sortByUser() {
             $.get('/todos/sorted-by-user', function (items) {

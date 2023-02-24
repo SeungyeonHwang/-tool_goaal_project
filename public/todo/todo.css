@@ -491,6 +491,14 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
+/* .clear-btn {
+    background-color: transparent;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+} */
+
 .filter-btn.active {
     background-color: #007bff;
     color: #fff;
@@ -507,7 +515,7 @@ input[type="checkbox"] {
     padding: 0;
     margin-right: 10px;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
 }
 
 /* Arrow icons */

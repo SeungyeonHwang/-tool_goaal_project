@@ -28,15 +28,28 @@ func (t *TodoHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func (t *TodoHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
+	sort := r.FormValue("sort")
+	filter := r.FormValue("filter")
 	var list = make([]*model.Todo, 0)
 
-	switch r.URL.Path {
-	case "/todos/sorted-by-user":
-		list = t.db.GetTodosSortedByUser(sessionId)
-	case "/todos/sorted-by-completed":
-		list = t.db.GetTodosSortedByCompleted(sessionId)
-	default:
-		list = t.db.GetTodos(sessionId)
+	if sort != "" && filter != "" {
+		switch filter {
+		case "user":
+			list = t.db.GetTodosSortedByUser(sessionId, sort)
+		case "completed":
+			list = t.db.GetTodosSortedByCompleted(sessionId, sort)
+		default:
+			list = t.db.GetTodos(sessionId, sort)
+		}
+	} else {
+		switch r.URL.Path {
+		case "/todos/sorted-by-user":
+			list = t.db.GetTodosSortedByUser(sessionId, "")
+		case "/todos/sorted-by-completed":
+			list = t.db.GetTodosSortedByCompleted(sessionId, "")
+		default:
+			list = t.db.GetTodos(sessionId, "")
+		}
 	}
 
 	rd.JSON(w, http.StatusOK, list)
@@ -59,6 +72,16 @@ func (t *TodoHandler) removeTodoListHandler(w http.ResponseWriter, r *http.Reque
 		rd.JSON(w, http.StatusOK, Success{false})
 	}
 }
+
+// TODO
+// func (t *TodoHandler) removeCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
+// 	ok := t.db.RemoveCompletedTodo()
+// 	if ok {
+// 		rd.JSON(w, http.StatusOK, Success{true})
+// 	} else {
+// 		rd.JSON(w, http.StatusOK, Success{false})
+// 	}
+// }
 
 func (t *TodoHandler) completeTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -109,12 +132,15 @@ func MakeHandler(dbDir string) *TodoHandler {
 	r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-user", t.getTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-completed", t.getTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted", t.getTodoListHandler).Methods("GET")
+
 	r.HandleFunc("/complete-todo/{id:[0-9]+}", t.completeTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/progress", t.getTodoProgressHandler).Methods("GET")
 
 	r.HandleFunc("/todos", t.addTodoListHandler).Methods("POST")
 
 	r.HandleFunc("/todos/{id:[0-9]+}", t.removeTodoListHandler).Methods("DELETE")
+	// r.HandleFunc("/todos-completed-clear", t.removeCompletedTodoListHandler).Methods("DELETE")
 
 	return t
 }

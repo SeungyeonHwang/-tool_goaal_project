@@ -34,31 +34,46 @@ func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
 	return todos
 }
 
-func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
+func (s *sqliteHandler) GetTodos(sessionId string, sort string) []*Todo {
 	query := `
         SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
         FROM todos
         JOIN user ON todos.sessionId = user.sessionId
         WHERE todos.sessionId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY todos.createdAt ASC"
+	case "desc":
+		query += " ORDER BY todos.createdAt DESC"
+	}
 	return s.getTodosList(query, sessionId)
 }
 
 // TODO
-func (s *sqliteHandler) GetTodosSortedByUser(sessionId string) []*Todo {
+func (s *sqliteHandler) GetTodosSortedByUser(sessionId string, sort string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
 		FROM todos
 		JOIN user ON todos.sessionId = user.sessionId
 		WHERE todos.sessionId = ?`
+
 	return s.getTodosList(query, sessionId)
 }
 
-func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string) []*Todo {
+func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string, sort string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
 		FROM todos
 		JOIN user ON todos.sessionId = user.sessionId
-		WHERE todos.sessionId = ? AND todos.completed = 1`
+		WHERE todos.sessionId = ? AND todos.completed = 0`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY todos.createdAt ASC"
+	case "desc":
+		query += " ORDER BY todos.createdAt DESC"
+	}
 	return s.getTodosList(query, sessionId)
 }
 
@@ -119,6 +134,20 @@ func (s *sqliteHandler) RemoveTodo(id int) bool {
 	cnt, _ := rs.RowsAffected()
 	return cnt > 0
 }
+
+// TODO : Team todo delete
+// func (s *sqliteHandler) RemoveCompletedTodo(id int) bool {
+// 	stmt, err := s.db.Prepare("DELETE FROM todos WHERE id=?")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	rs, err := stmt.Exec(id)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	cnt, _ := rs.RowsAffected()
+// 	return cnt > 0
+// }
 
 func (s *sqliteHandler) GetProgress(sessionId string) int {
 	rows, err := s.db.Query(`
