@@ -23,13 +23,37 @@
                     <div class="card-body">
                         <h5 class="card-title mb-4">Create or Join a Project</h5>
                         <form>
-                            <div class="form-group">
+                            <div class="form-group mb-4">
                                 <label for="project-name">Project Name</label>
                                 <input type="text" class="form-control" id="project-name" required>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-4">
+                                <label for="project-code">Project Code</label>
+                                <input type="text" class="form-control" id="project-code" required>
+                            </div>
+                            <div class="form-group mb-4">
                                 <label for="project-description">Project Description</label>
                                 <textarea class="form-control" id="project-description" rows="3"></textarea>
+                            </div>
+                            <hr>
+                            <div class="form-group mb-4">
+                                <label for="project-color">Project Color</label>
+                                <div id="color-options">
+                                    <div class="color-option blue" data-color="#0000ff"></div>
+                                    <div class="color-option red" data-color="#ff0000"></div>
+                                    <div class="color-option green" data-color="#008000"></div>
+                                    <div class="color-option pink" data-color="#ffc0cb"></div>
+                                    <div class="color-option brown" data-color="#a52a2a"></div>
+                                    <div class="color-option yellow" data-color="#ffff00"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-priority">Priority</label>
+                                <select class="form-control" id="project-priority">
+                                    <option value="high">上</option>
+                                    <option value="mid">中</option>
+                                    <option value="low">下</option>
+                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Create Project</button>
                         </form>
@@ -39,62 +63,22 @@
                             <li class="project-item">
                                 <div class="project-color"></div>
                                 <div class="project-name">Project 1 (1234)</div>
+                                <div class="project-priority">上</div>
                             </li>
                             <li class="project-item">
                                 <div class="project-color"></div>
                                 <div class="project-name">Project 2 (5678)</div>
+                                <div class="project-priority">中</div>
                             </li>
                             <li class="project-item">
                                 <div class="project-color"></div>
                                 <div class="project-name">Project 3 (9012)</div>
+                                <div class="project-priority">下</div>
                             </li>
                             <li class="project-item">
                                 <div class="project-color"></div>
                                 <div class="project-name">Project 1 (1234)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 2 (5678)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 3 (9012)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 1 (1234)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 2 (5678)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 3 (9012)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 1 (1234)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 2 (5678)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 3 (9012)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 1 (1234)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 2 (5678)</div>
-                            </li>
-                            <li class="project-item">
-                                <div class="project-color"></div>
-                                <div class="project-name">Project 3 (9012)</div>
+                                <div class="project-priority">下</div>
                             </li>
                         </ul>
                         <button type="submit" class="btn btn-secondary" id="join-project-btn">Join Project</button>
@@ -114,6 +98,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
+<script src="project.js"></script>
 </body>
 
 </html>

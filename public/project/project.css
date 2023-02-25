@@ -48,9 +48,55 @@
     border-bottom: 1px solid #ccc;
 }
 
+.project-item .project-priority {
+    font-weight: bold;
+    margin-left: auto;
+    text-transform: capitalize;
+    margin-right: 10px;
+  }
+
 .project-color {
     width: 20px;
     height: 20px;
     margin-right: 10px;
     background-color: #f0ad4e;
 }
+
+.color-option {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.blue {
+    background-color: #0000ff;
+}
+
+.red {
+    background-color: #ff0000;
+}
+
+.green {
+    background-color: #008000;
+}
+
+.pink {
+    background-color: #ffc0cb;
+}
+
+.brown {
+    background-color: #a52a2a;
+}
+
+.yellow {
+    background-color: #ffff00;
+}
+
+.color-option.active {
+    border: 3px solid blueviolet;
+}
+
+
