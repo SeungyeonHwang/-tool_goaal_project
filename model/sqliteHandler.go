@@ -17,6 +17,47 @@ func (s *sqliteHandler) Close() {
 	s.db.Close()
 }
 
+// Project
+func (s *sqliteHandler) GetUserIdBySessionId(sessionId string) int {
+	var userId int
+	err := s.db.QueryRow("SELECT id FROM user WHERE sessionId = ?", sessionId).Scan(&userId)
+	if err != nil {
+		panic(err)
+	}
+	return userId
+}
+
+func (s *sqliteHandler) AddProject(name string, code string, description string, color string, priority string, userId int) *Project {
+	stmt, err := s.db.Prepare("INSERT INTO projects (name, code, description, color, createdAt, priority, userId) VALUES (?, ?, ?, ?, ?, ? ,?)")
+	if err != nil {
+		panic(err)
+	}
+
+	n := time.Now()
+	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M")
+	if err != nil {
+		panic(err)
+	}
+
+	rs, err := stmt.Exec(name, code, description, color, formattedTime, priority, userId)
+	if err != nil {
+		panic(err)
+	}
+
+	id, _ := rs.LastInsertId()
+	var project Project
+	project.Id = int(id)
+	project.Name = name
+	project.Code = code
+	project.Description = description
+	project.Color = color
+	project.CreatedAt = formattedTime
+	project.Priority = priority
+	project.UserId = userId
+
+	return &project
+}
+
 func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
 	todos := []*Todo{}
 	rows, err := s.db.Query(query, sessionId)
@@ -196,18 +237,36 @@ func newSqliteHandler(dbDir string) DBHandler {
 	if err != nil {
 		panic(err)
 	}
+
 	statement, _ := database.Prepare(
-		`CREATE TABLE IF NOT EXISTS todos (
-			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
-			sessionId STRING,
-			name      TEXT,
-			completed BOOLEAN,
-			createdAt STRING
-		);
-		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
-			sessionId ASC
-		)`)
+		`CREATE TABLE IF NOT EXISTS projects (
+			id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+			name        TEXT,
+			code        TEXT,
+			description TEXT,
+			color       TEXT,
+			priority    TEXT,
+			createdAt   STRING,
+			userId     INTEGER,
+			FOREIGN KEY (userId) REFERENCES user(id)
+		);`)
 	statement.Exec()
+
+	// CREATE TABLE IF NOT EXISTS project_users (
+	// 	id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+	// 	project_id  INTEGER,
+	// 	user_id     INTEGER,
+	// 	FOREIGN KEY (project_id) REFERENCES projects(id),
+	// 	FOREIGN KEY (user_id) REFERENCES user(id)
+	// );
+
+	// CREATE TABLE IF NOT EXISTS project_todos (
+	// 	id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+	// 	project_id  INTEGER,
+	// 	todo_id     INTEGER,
+	// 	FOREIGN KEY (project_id) REFERENCES projects(id),
+	// 	FOREIGN KEY (todo_id) REFERENCES todos(id)
+	// );
 
 	statement, _ = database.Prepare(
 		`CREATE TABLE IF NOT EXISTS user (
@@ -221,5 +280,19 @@ func newSqliteHandler(dbDir string) DBHandler {
 			sessionId ASC
 		)`)
 	statement.Exec()
+
+	statement, _ = database.Prepare(
+		`CREATE TABLE IF NOT EXISTS todos (
+			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
+			sessionId STRING,
+			name      TEXT,
+			completed BOOLEAN,
+			createdAt STRING
+		);
+		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
+			sessionId ASC
+		)`)
+	statement.Exec()
+
 	return &sqliteHandler{db: database}
 }

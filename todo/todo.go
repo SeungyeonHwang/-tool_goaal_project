@@ -51,7 +51,6 @@ func (t *TodoHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request)
 			list = t.db.GetTodos(sessionId, "")
 		}
 	}
-
 	rd.JSON(w, http.StatusOK, list)
 }
 
