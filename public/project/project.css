@@ -1,9 +1,20 @@
+.container-fluid {
+    width: 50%;
+    margin-top: 100px
+}
+
+.card {
+    height: 700px;
+}
+
+
+
 /* 프로젝트 리스트의 스타일 */
 #project-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 200px;
+    max-height: 450px !important;
     overflow-y: scroll;
     border: 1px solid #ccc;
 }
@@ -45,16 +56,16 @@
     padding: 10px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-  }
+}
 
-  .header-item {
+.header-item {
     flex: 1;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
-  }
+}
 
-  
+
 .project-item {
     display: flex;
     align-items: center;
@@ -68,7 +79,7 @@
     margin-left: auto;
     text-transform: capitalize;
     margin-right: 10px;
-  }
+}
 
 .project-color {
     width: 20px;
@@ -116,13 +127,35 @@
 
 .project-item.high .project-color {
     background-color: red;
-  }
-  
-  .project-item.mid .project-color {
-    background-color: orange;
-  }
-  
-  .project-item.low .project-color {
-    background-color: green;
-  }
+}
 
+.project-item.mid .project-color {
+    background-color: orange;
+}
+
+.project-item.low .project-color {
+    background-color: green;
+}
+
+.search-container {
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.search-icon {
+    position: relative;
+    top: 5px;
+    margin-right: -20px;
+}
+    
+#search-project {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 25px;
+    background-color: #f1f1f1;
+    margin-bottom: 0;
+    width: 300px;
+    text-align: center;
+}
