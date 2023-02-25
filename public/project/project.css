@@ -29,7 +29,7 @@
 }
 
 #join-project-btn:hover {
-    background-color: #e2e2e2;
+    background-color: #676767;
 }
 
 #project-list {
@@ -40,6 +40,21 @@
     overflow-y: scroll
 }
 
+.project-list-header {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .header-item {
+    flex: 1;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  
 .project-item {
     display: flex;
     align-items: center;
@@ -99,4 +114,15 @@
     border: 3px solid blueviolet;
 }
 
+.project-item.high .project-color {
+    background-color: red;
+  }
+  
+  .project-item.mid .project-color {
+    background-color: orange;
+  }
+  
+  .project-item.low .project-color {
+    background-color: green;
+  }
 
