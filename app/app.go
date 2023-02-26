@@ -46,11 +46,11 @@ func MakeHandler(dbDir string) *AppHandler {
 
 	//PROJECT
 	r.HandleFunc("/projects", a.project.AddProjectListHandler).Methods("POST")
-	r.HandleFunc("/projects/sorted", a.project.getProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-name", a.project.getProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-code", a.project.getProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-priority", a.project.getProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-color", a.project.getProjectListHandler).Methods("GET")
+	r.HandleFunc("/projects", a.project.GetProjectListHandler).Methods("GET")
+	r.HandleFunc("/projects/sorted-by-name", a.project.GetProjectListHandler).Methods("GET")
+	r.HandleFunc("/projects/sorted-by-code", a.project.GetProjectListHandler).Methods("GET")
+	r.HandleFunc("/projects/sorted-by-priority", a.project.GetProjectListHandler).Methods("GET")
+	r.HandleFunc("/projects/sorted-by-color", a.project.GetProjectListHandler).Methods("GET")
 
 	//TODO
 	// r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")

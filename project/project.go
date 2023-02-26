@@ -34,21 +34,23 @@ func (h *Handler) AddProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	rd.JSON(w, http.StatusCreated, project)
 }
 
-func (h *Handler) getProjectListHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := login.GetSessionId(r)
+	userId := h.db.GetUserIdBySessionId(sessionId)
 	sort := r.FormValue("sort")
 	var list = make([]*model.Project, 0)
 
 	switch r.URL.Path {
 	case "/projects/sorted-by-name":
-		list = h.db.GetProjectsSortedByName(sort)
+		list = h.db.GetProjectsSortedByName(userId, sort)
 	case "/projects/sorted-by-code":
-		list = h.db.GetProjectsSortedByCode(sort)
+		list = h.db.GetProjectsSortedByCode(userId, sort)
 	case "/projects/sorted-by-priority":
-		list = h.db.GetProjectsSortedByPriority(sort)
+		list = h.db.GetProjectsSortedByPriority(userId, sort)
 	case "/projects/sorted-by-color":
-		list = h.db.GetProjectsSortedByColor(sort)
+		list = h.db.GetProjectsSortedByColor(userId, sort)
 	default:
-		list = h.db.GetProjects("")
+		list = h.db.GetProjects(userId, sort)
 	}
 	rd.JSON(w, http.StatusOK, list)
 }

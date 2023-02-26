@@ -26,7 +26,13 @@ type DBHandler interface {
 	//PROJECT
 	GetUserIdBySessionId(sessionId string) int
 	AddProject(name string, code string, description string, color string, priority string, userId int) *Project
+	GetProjects(userId int, sort string) []*Project
+	GetProjectsSortedByName(userId int, sort string) []*Project
+	GetProjectsSortedByCode(userId int, sort string) []*Project
+	GetProjectsSortedByPriority(userId int, sort string) []*Project
+	GetProjectsSortedByColor(userId int, sort string) []*Project
 
+	//TODO
 	GetTodos(sessionId string, sort string) []*Todo
 	GetTodosSortedByUser(sessionId string, sort string) []*Todo
 	GetTodosSortedByCompleted(sessionId string, sort string) []*Todo

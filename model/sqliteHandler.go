@@ -55,7 +55,132 @@ func (s *sqliteHandler) AddProject(name string, code string, description string,
 	project.Priority = priority
 	project.UserId = userId
 
+	s.addUserToProject(project.Id, userId)
+
 	return &project
+}
+
+func (s *sqliteHandler) addUserToProject(projectId int, userId int) {
+	stmt, err := s.db.Prepare("INSERT INTO project_users (projectId, userId) VALUES (?, ?)")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = stmt.Exec(projectId, userId)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (s *sqliteHandler) getProjectsList(query string, userId int) []*Project {
+	projects := []*Project{}
+	rows, err := s.db.Query(query, userId)
+
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var project Project
+		rows.Scan(
+			&project.Id,
+			&project.Name,
+			&project.Code,
+			&project.Description,
+			&project.Color,
+			&project.Priority,
+			&project.CreatedAt,
+			&project.UserId,
+		)
+		projects = append(projects, &project)
+	}
+	return projects
+}
+
+func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
+	query := `
+		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
+		FROM projects
+		INNER JOIN project_users
+		ON projects.id = project_users.projectId
+		WHERE project_users.userId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY projects.createdAt ASC"
+	case "desc":
+		query += " ORDER BY projects.createdAt DESC"
+	}
+	return s.getProjectsList(query, userId)
+}
+
+func (s *sqliteHandler) GetProjectsSortedByName(userId int, sort string) []*Project {
+	query := `
+		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
+		FROM projects
+		INNER JOIN project_users
+		ON projects.id = project_users.projectId
+		WHERE project_users.userId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY projects.name ASC"
+	case "desc":
+		query += " ORDER BY projects.name DESC"
+	}
+	return s.getProjectsList(query, userId)
+}
+
+func (s *sqliteHandler) GetProjectsSortedByCode(userId int, sort string) []*Project {
+	query := `
+		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
+		FROM projects
+		INNER JOIN project_users
+		ON projects.id = project_users.projectId
+		WHERE project_users.userId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY projects.code ASC"
+	case "desc":
+		query += " ORDER BY projects.code DESC"
+	}
+	return s.getProjectsList(query, userId)
+}
+
+func (s *sqliteHandler) GetProjectsSortedByPriority(userId int, sort string) []*Project {
+	query := `
+		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
+		FROM projects
+		INNER JOIN project_users
+		ON projects.id = project_users.projectId
+		WHERE project_users.userId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY projects.priority ASC"
+	case "desc":
+		query += " ORDER BY projects.priority DESC"
+	}
+	return s.getProjectsList(query, userId)
+}
+
+func (s *sqliteHandler) GetProjectsSortedByColor(userId int, sort string) []*Project {
+	query := `
+		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
+		FROM projects
+		INNER JOIN project_users
+		ON projects.id = project_users.projectId
+		WHERE project_users.userId = ?`
+
+	switch sort {
+	case "asc":
+		query += " ORDER BY projects.color ASC"
+	case "desc":
+		query += " ORDER BY projects.color DESC"
+	}
+	return s.getProjectsList(query, userId)
 }
 
 func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
@@ -252,13 +377,15 @@ func newSqliteHandler(dbDir string) DBHandler {
 		);`)
 	statement.Exec()
 
-	// CREATE TABLE IF NOT EXISTS project_users (
-	// 	id          INTEGER  PRIMARY KEY AUTOINCREMENT,
-	// 	project_id  INTEGER,
-	// 	user_id     INTEGER,
-	// 	FOREIGN KEY (project_id) REFERENCES projects(id),
-	// 	FOREIGN KEY (user_id) REFERENCES user(id)
-	// );
+	statement, _ = database.Prepare(
+		`CREATE TABLE IF NOT EXISTS project_users (
+			id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+			projectId  INTEGER,
+			userId     INTEGER,
+			FOREIGN KEY (projectId) REFERENCES projects(id),
+			FOREIGN KEY (userId) REFERENCES user(id)
+		);`)
+	statement.Exec()
 
 	// CREATE TABLE IF NOT EXISTS project_todos (
 	// 	id          INTEGER  PRIMARY KEY AUTOINCREMENT,
