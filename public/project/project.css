@@ -7,23 +7,21 @@
     height: 700px;
 }
 
-
-
 /* 프로젝트 리스트의 스타일 */
-#project-list {
+.project-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    height: 450px;
     max-height: 450px !important;
     overflow-y: scroll;
     border: 1px solid #ccc;
 }
 
-/* 프로젝트 아이템의 스타일 */
 .project-item {
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 10px !important;
     cursor: pointer;
 }
 
@@ -85,7 +83,7 @@
     width: 20px;
     height: 20px;
     margin-right: 10px;
-    background-color: #f0ad4e;
+    border: 1px solid #ccc;
 }
 
 .color-option {
@@ -95,6 +93,10 @@
     margin-right: 5px;
     border: 1px solid #ccc;
     cursor: pointer;
+}
+
+.gray {
+    background-color: #A9A9A9;
 }
 
 .blue {

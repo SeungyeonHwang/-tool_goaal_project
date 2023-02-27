@@ -104,14 +104,9 @@ func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 		FROM projects
 		INNER JOIN project_users
 		ON projects.id = project_users.projectId
-		WHERE project_users.userId = ?`
+		WHERE project_users.userId = ?
+		ORDER BY projects.createdAt DESC`
 
-	switch sort {
-	case "asc":
-		query += " ORDER BY projects.createdAt ASC"
-	case "desc":
-		query += " ORDER BY projects.createdAt DESC"
-	}
 	return s.getProjectsList(query, userId)
 }
 

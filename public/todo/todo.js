@@ -1,11 +1,11 @@
 (function ($) {
     'use strict';
 
-    var filter = 'all';
-
     $(function () {
+        var filter = 'all';
         var todoListItem = $('.todo-list');
         var todoListInput = $('.todo-list-input');
+        
         $('.todo-list-add-btn').on("click", function (event) {
             event.preventDefault();
 
