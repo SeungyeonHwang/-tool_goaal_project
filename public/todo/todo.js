@@ -5,7 +5,7 @@
         var filter = 'all';
         var todoListItem = $('.todo-list');
         var todoListInput = $('.todo-list-input');
-        
+
         $('.todo-list-add-btn').on("click", function (event) {
             event.preventDefault();
 
@@ -20,7 +20,12 @@
         var addItem = function (item) {
             var completedClass = item.completed ? "completed" : "";
             var picture = item.picture ? item.picture : "";
-            var createdAt = item.created_at;
+            var createdAt = new Date(item.created_at);
+            createdAt = createdAt.getFullYear() + '年' +
+                ('0' + (createdAt.getMonth() + 1)).slice(-2) + '月' +
+                ('0' + createdAt.getDate()).slice(-2) + ' ' +
+                ('0' + createdAt.getHours()).slice(-2) + '時' +
+                ('0' + createdAt.getMinutes()).slice(-2)+ '分';
             var listItemHtml =
                 "<li class='" +
                 completedClass +
@@ -121,7 +126,7 @@
             upArrowBtn.style.display = 'none';
             downArrowBtn.style.display = 'block';
             var sort = 'desc';
-            $.get('/todos/sorted', {filter: filter, sort: sort}, function (items) {
+            $.get('/todos/sorted', { filter: filter, sort: sort }, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)
@@ -133,7 +138,7 @@
             downArrowBtn.style.display = 'none';
             upArrowBtn.style.display = 'block';
             var sort = 'asc';
-            $.get('/todos/sorted', {filter: filter, sort: sort}, function (items) {
+            $.get('/todos/sorted', { filter: filter, sort: sort }, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)

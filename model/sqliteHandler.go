@@ -34,7 +34,7 @@ func (s *sqliteHandler) AddProject(name string, code string, description string,
 	}
 
 	n := time.Now()
-	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M")
+	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M:%S")
 	if err != nil {
 		panic(err)
 	}
@@ -245,7 +245,7 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 	}
 
 	n := time.Now()
-	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M")
+	formattedTime := timeutil.Strftime(&n, "%Y-%m-%d %H:%M:%S")
 	if err != nil {
 		panic(err)
 	}
