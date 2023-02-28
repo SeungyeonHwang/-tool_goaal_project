@@ -1,5 +1,11 @@
 package model
 
+type User struct {
+	Id      int    `json:"id"`
+	Email   string `json:"email"`
+	Picture string `json:"picture"`
+}
+
 type Project struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
@@ -20,17 +26,14 @@ type Todo struct {
 }
 
 type DBHandler interface {
-	//LOGIN
+	//User
 	AddUser(sessionId string, email string, picture string)
+	GetUserInfoById(id int) *User
+	GetUserIdBySessionId(sessionId string) int
 
 	//PROJECT
-	GetUserIdBySessionId(sessionId string) int
 	AddProject(name string, code string, description string, color string, priority string, userId int) *Project
 	GetProjects(userId int, sort string) []*Project
-	GetProjectsSortedByName(userId int, sort string) []*Project
-	GetProjectsSortedByCode(userId int, sort string) []*Project
-	GetProjectsSortedByPriority(userId int, sort string) []*Project
-	GetProjectsSortedByColor(userId int, sort string) []*Project
 
 	//TODO
 	GetTodos(sessionId string, sort string) []*Todo

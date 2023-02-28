@@ -39,18 +39,6 @@ func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	userId := h.db.GetUserIdBySessionId(sessionId)
 	sort := r.FormValue("sort")
 	var list = make([]*model.Project, 0)
-
-	switch r.URL.Path {
-	case "/projects/sorted-by-name":
-		list = h.db.GetProjectsSortedByName(userId, sort)
-	case "/projects/sorted-by-code":
-		list = h.db.GetProjectsSortedByCode(userId, sort)
-	case "/projects/sorted-by-priority":
-		list = h.db.GetProjectsSortedByPriority(userId, sort)
-	case "/projects/sorted-by-color":
-		list = h.db.GetProjectsSortedByColor(userId, sort)
-	default:
-		list = h.db.GetProjects(userId, sort)
-	}
+	list = h.db.GetProjects(userId, sort)
 	rd.JSON(w, http.StatusOK, list)
 }

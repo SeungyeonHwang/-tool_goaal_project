@@ -6,6 +6,7 @@ import (
 	"github.com/SeungyeonHwang/tool-goaal/login"
 	"github.com/SeungyeonHwang/tool-goaal/model"
 	"github.com/SeungyeonHwang/tool-goaal/project"
+	"github.com/SeungyeonHwang/tool-goaal/user"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
@@ -14,6 +15,7 @@ type AppHandler struct {
 	http.Handler
 	db      model.DBHandler
 	project *project.Handler
+	user    *user.Handler
 }
 
 func (a *AppHandler) Close() {
@@ -35,22 +37,20 @@ func MakeHandler(dbDir string) *AppHandler {
 		Handler: n,
 		db:      model.NewDBHandler(dbDir),
 		project: project.NewHandler(model.NewDBHandler(dbDir)),
+		user:    user.NewHandler(model.NewDBHandler(dbDir)),
 	}
+
+	//USER
+	r.HandleFunc("/user/{id:[0-9]+}", a.user.GetUserInfoById).Methods("GET")
 
 	//LOGIN
 	r.HandleFunc("/auth/google/login", login.GoogleLoginHandler)
 	r.HandleFunc("/auth/google/callback", login.GoogleAuthCallback)
 
-	//HOME
-	r.HandleFunc("/", a.project.IndexHandler)
-
 	//PROJECT
+	r.HandleFunc("/", a.project.IndexHandler)
 	r.HandleFunc("/projects", a.project.AddProjectListHandler).Methods("POST")
 	r.HandleFunc("/projects", a.project.GetProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-name", a.project.GetProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-code", a.project.GetProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-priority", a.project.GetProjectListHandler).Methods("GET")
-	r.HandleFunc("/projects/sorted-by-color", a.project.GetProjectListHandler).Methods("GET")
 
 	//TODO
 	// r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")

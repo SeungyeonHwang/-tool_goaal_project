@@ -27,6 +27,15 @@ func (s *sqliteHandler) GetUserIdBySessionId(sessionId string) int {
 	return userId
 }
 
+func (s *sqliteHandler) GetUserInfoById(id int) *User {
+	var user User
+	err := s.db.QueryRow("SELECT id, email, picture FROM user WHERE id = ?", id).Scan(&user.Id, &user.Email, &user.Picture)
+	if err != nil {
+		panic(err)
+	}
+	return &user
+}
+
 func (s *sqliteHandler) AddProject(name string, code string, description string, color string, priority string, userId int) *Project {
 	stmt, err := s.db.Prepare("INSERT INTO projects (name, code, description, color, createdAt, priority, userId) VALUES (?, ?, ?, ?, ?, ? ,?)")
 	if err != nil {
@@ -107,74 +116,6 @@ func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 		WHERE project_users.userId = ?
 		ORDER BY projects.createdAt DESC`
 
-	return s.getProjectsList(query, userId)
-}
-
-func (s *sqliteHandler) GetProjectsSortedByName(userId int, sort string) []*Project {
-	query := `
-		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
-		FROM projects
-		INNER JOIN project_users
-		ON projects.id = project_users.projectId
-		WHERE project_users.userId = ?`
-
-	switch sort {
-	case "asc":
-		query += " ORDER BY projects.name ASC"
-	case "desc":
-		query += " ORDER BY projects.name DESC"
-	}
-	return s.getProjectsList(query, userId)
-}
-
-func (s *sqliteHandler) GetProjectsSortedByCode(userId int, sort string) []*Project {
-	query := `
-		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
-		FROM projects
-		INNER JOIN project_users
-		ON projects.id = project_users.projectId
-		WHERE project_users.userId = ?`
-
-	switch sort {
-	case "asc":
-		query += " ORDER BY projects.code ASC"
-	case "desc":
-		query += " ORDER BY projects.code DESC"
-	}
-	return s.getProjectsList(query, userId)
-}
-
-func (s *sqliteHandler) GetProjectsSortedByPriority(userId int, sort string) []*Project {
-	query := `
-		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
-		FROM projects
-		INNER JOIN project_users
-		ON projects.id = project_users.projectId
-		WHERE project_users.userId = ?`
-
-	switch sort {
-	case "asc":
-		query += " ORDER BY projects.priority ASC"
-	case "desc":
-		query += " ORDER BY projects.priority DESC"
-	}
-	return s.getProjectsList(query, userId)
-}
-
-func (s *sqliteHandler) GetProjectsSortedByColor(userId int, sort string) []*Project {
-	query := `
-		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
-		FROM projects
-		INNER JOIN project_users
-		ON projects.id = project_users.projectId
-		WHERE project_users.userId = ?`
-
-	switch sort {
-	case "asc":
-		query += " ORDER BY projects.color ASC"
-	case "desc":
-		query += " ORDER BY projects.color DESC"
-	}
 	return s.getProjectsList(query, userId)
 }
 

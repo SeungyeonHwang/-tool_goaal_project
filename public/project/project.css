@@ -21,7 +21,7 @@
 .project-item {
     display: flex;
     align-items: center;
-    padding: 10px !important;
+    padding: 7px !important;
     cursor: pointer;
 }
 
@@ -29,8 +29,32 @@
     background-color: #eee;
 }
 
+.project-item:hover[data-hover-style] {
+    background-color: attr(data-hover-style);
+}
+
 .project-name {
-    margin-left: 10px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.project-code {
+    font-size: 0.8em;
+    margin-right: 10px;
+}
+
+.project-priority {
+    font-size: 1.2em;
+    margin-right: 20px;
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.project-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px skyblue;
 }
 
 #join-project-btn {
@@ -72,10 +96,8 @@
     border-bottom: 1px solid #ccc;
 }
 
-.project-item .project-priority {
-    font-weight: bold;
+.project-item {
     margin-left: auto;
-    text-transform: capitalize;
     margin-right: 10px;
 }
 
@@ -151,7 +173,7 @@
     top: 5px;
     margin-right: -20px;
 }
-    
+
 #search-project {
     padding: 8px 10px;
     border: none;
