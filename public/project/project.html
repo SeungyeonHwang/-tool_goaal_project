@@ -72,10 +72,14 @@
                             <input type="text" placeholder="Search projects..." id="search-project">
                         </div>
                         <div class="project-list-header d-flex">
-                            <div class="header-item" id="sort-name">Name <i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-code">Code <i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-priority">Priority <i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-color">Color <i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></div>
+                            <div class="header-item" id="sort-name">Name <i class="fa fa-chevron-up"></i><i
+                                    class="fa fa-chevron-down"></i></div>
+                            <div class="header-item" id="sort-code">Code <i class="fa fa-chevron-up"></i><i
+                                    class="fa fa-chevron-down"></i></div>
+                            <div class="header-item" id="sort-priority">Priority <i class="fa fa-chevron-up"></i><i
+                                    class="fa fa-chevron-down"></i></div>
+                            <div class="header-item" id="sort-color">Color <i class="fa fa-chevron-up"></i><i
+                                    class="fa fa-chevron-down"></i></div>
                         </div>
                         <ul class="project-list">
                             <!-- item here -->
@@ -86,6 +90,35 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="project-detail-modal" tabindex="-1" role="dialog"
+    aria-labelledby="project-detail-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="project-detail-modal-label">Project Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Project ID: <span id="project-id"></span></p>
+                <p>Project Name: <span id="project-name"></span></p>
+                <p>Project Code: <span id="project-code"></span></p>
+                <p>Project Description: <span id="project-description"></span></p>
+                <p>Project Color: <span id="project-color"></span></p>
+                <p>Project Priority: <span id="project-priority"></span></p>
+                <p>Participants: <span id="project-participants"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit-project-btn">Edit</button>
+                <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 
 <!-- Optional JavaScript -->
