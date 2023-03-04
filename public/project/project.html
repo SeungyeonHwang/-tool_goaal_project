@@ -40,12 +40,12 @@
                                 <label for="project-color">Project Color</label>
                                 <div id="color-options">
                                     <div class="color-option gray" data-color="#A9A9A9"></div>
-                                    <div class="color-option blue" data-color="#0000ff"></div>
-                                    <div class="color-option red" data-color="#ff0000"></div>
-                                    <div class="color-option green" data-color="#008000"></div>
+                                    <div class="color-option blue" data-color="#0091ff"></div>
+                                    <div class="color-option red" data-color="#e05454"></div>
+                                    <div class="color-option green" data-color="#76a676"></div>
                                     <div class="color-option pink" data-color="#ffc0cb"></div>
-                                    <div class="color-option brown" data-color="#a52a2a"></div>
-                                    <div class="color-option yellow" data-color="#ffff00"></div>
+                                    <div class="color-option brown" data-color="#643d3d"></div>
+                                    <div class="color-option yellow" data-color="#f0f068"></div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -96,48 +96,61 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="project-detail-modal-label">Project Details</h5>
+                    <h5 class="modal-title" id="project-detail-modal-label"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="project-info">
-                        <span><i class="fa fa-star"></i> <strong>優先度</strong>
-                            <br>
-                            <span id="project-priority"></span>
-                        </span>
-                        <br>
-                        <br>
-                        <span><i class="fa fa-circle"></i> <strong>担当者</strong>
-                            <br>
-                            <span id="project-userId"></span>
-                        </span>
-                        <br>
-                        <br>
-                        <span><i class="fa fa-calendar"></i><strong>作成日</strong>
-                            <br>
-                            <span id="project-createdAt"></span>
-                        </span>
-                        <br>
-                        <br>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="mb-3">
+                                <i class="fa fa-exclamation-triangle text-warning"></i>
+                                <span class="font-weight-bold ml-1">優先度</span>
+                            </div>
+                            <div id="project-priority" class="font-weight-bold"></div>
+                        </div>
+                        <div>
+                            <div class="mb-3">
+                                <i class="fa fa-circle text-primary"></i>
+                                <span class="font-weight-bold ml-1">担当者</span>
+                            </div>
+                            <div class="participant-manager">
+                                <img src="" id="project-userPicture">
+                                <div id="project-userId"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mb-3">
+                                <i class="fa fa-calendar text-info"></i>
+                                <span class="font-weight-bold ml-1">作成日</span>
+                            </div>
+                            <div id="project-createdAt"></div>
+                        </div>
                     </div>
-                    <div class="project-description" id="project-description"></div>
-                    <br>
+                    <hr>
+                        <div class="mb-3">
+                        <i class="fa fa-file-text text-info"></i>
+                        <span class="font-weight-bold ml-1">内容</span>
+                    </div>
+                    <div id="project-description"></div>
+                    <hr class="my-3">
+                    <div class="font-weight-bold mb-3">
+                        <i class="fa fa-user text-success"></i>
+                        <span class="ml-1">参加者</span>
+                    </div>
                     <div class="participant-list">
-                        <span><i class="fa fa-user"></i> <strong>参加者</strong></span>
                         <ul></ul>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="edit-project-btn">Edit</button>
                     <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 
 <!-- Optional JavaScript -->

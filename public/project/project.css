@@ -46,7 +46,6 @@
 .project-priority {
     font-size: 1.2em;
     margin-right: 20px;
-    font-weight: bold;
     margin-left: auto;
 }
 
@@ -55,10 +54,6 @@
     height: 40px;
     border-radius: 50%;
     box-shadow: 0 0 0 2px skyblue;
-}
-
-#join-project-btn:hover {
-    background-color: #676767;
 }
 
 #project-list {
@@ -118,15 +113,15 @@
 }
 
 .blue {
-    background-color: #0000ff;
+    background-color: #0091ff;
 }
 
 .red {
-    background-color: #ff0000;
+    background-color: #e05454;
 }
 
 .green {
-    background-color: #008000;
+    background-color: #76a676;
 }
 
 .pink {
@@ -134,11 +129,11 @@
 }
 
 .brown {
-    background-color: #a52a2a;
+    background-color: #643d3d;
 }
 
 .yellow {
-    background-color: #ffff00;
+    background-color: #f0f068;
 }
 
 .color-option.active {
@@ -190,18 +185,24 @@
 }
 
 .modal-content {
-    background-color: #fff; /* 모달 배경색 지정 */
     border-radius: 0;
-    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1); /* 모달 그림자 효과 추가 */
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+    /* 모달 그림자 효과 추가 */
+    max-height: calc(80vh - 60px);
+    /* 모달 내부의 높이를 적절하게 계산 */
+    overflow-y: auto;
+    /* 모달 내부의 내용이 높이 제한을 초과할 경우 스크롤바 표시 */
 }
 
 .modal-header {
     border-bottom: none;
-    background-color: #f1f1f1; /* 헤더 배경색 지정 */
+    background-color: #f1f1f1;
+    /* 헤더 배경색 지정 */
 }
 
 .modal-body {
-    padding: 1.5rem; /* 본문 패딩값 조정 */
+    padding: 1.5rem;
+    /* 본문 패딩값 조정 */
 }
 
 .modal-body .participant-list ul {
@@ -215,15 +216,10 @@
     margin-right: 5px;
 }
 
-.modal-body .participant-list li img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-}
-
 .modal-footer {
     border-top: none;
-    background-color: #f1f1f1; /* 푸터 배경색 지정 */
+    background-color: #f1f1f1;
+    /* 푸터 배경색 지정 */
 }
 
 .modal-footer button {
@@ -237,4 +233,36 @@
 .modal-title {
     font-size: 24px;
     font-weight: bold;
+}
+
+.participant-manager {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 30px;
+    background-color: #e6f2ff;
+    padding: 10px;
+}
+
+.participant-manager img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 30px;
+    background-color: #5af1976d;
+    padding: 10px;
+}
+
+.participant img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50%;
 }

@@ -165,15 +165,36 @@
                 modal.find(".modal-title").text(projectTitle);
                 var headerColor = project.color || "#808080"; // 기본값으로 회색 지정
                 modal.find(".modal-header").attr("style", "background-color: " + headerColor + ";");
-                modal.find("#project-priority").text(project.priority);
+                modal.find(".modal-footer").attr("style", "background-color: " + headerColor + ";");
+                var priorityText = "";
+                switch (project.priority) {
+                    case "high":
+                        priorityText = "⭐️⭐️⭐️⭐️⭐️";
+                        break;
+                    case "mid":
+                        priorityText = "⭐️⭐️⭐️";
+                        break;
+                    case "low":
+                        priorityText = "⭐️";
+                        break;
+                    default:
+                        priorityText = "";
+                        break;
+                }
+                modal.find("#project-priority").text(priorityText)
+
                 $.get("/user/" + project.user_id, function (user) {
-                
-                //TODO : make tag
+
+                    //TODO : make tag
                     modal.find("#project-userId").text(user.email);
-                //user.picture
+                    if (user.picture) {
+                        modal.find("#project-userPicture").attr("src", user.picture);
+                    } else {
+                        modal.find("#project-userPicture").hide();
+                    }
                 });
 
-                modal.find("#project-description").text(project.description);
+                modal.find("#project-description").html(project.description.replace(/\n/g, "<br>"));
                 modal.find("#project-createdAt").text(project.created_at);
 
                 // 참여자 목록 출력
@@ -182,9 +203,22 @@
                     participants.forEach(function (participant) {
                         if (participant.id == project.user_id) {
                             //TODO : 강조
-                            participantList += `<li>${participant.email} (${participant.picture})</li>`;
+                            participantList += `
+                            <li>
+                                <div class="participant-manager">
+                                    <img src="${participant.picture}" class="rounded-circle">
+                                    <div>${participant.email}</div>
+                                </div>
+                            </li>`;
+                            
                         } else {
-                            participantList += `<li>${participant.email} (${participant.picture})</li>`;
+                            participantList += `
+                            <li>
+                                <div class="participant">
+                                    <img src="${participant.picture}" class="rounded-circle">
+                                    <div>${participant.email}</div>
+                                </div>
+                            </li>`;
                         }
                     });
                     $(".participant-list ul").html(participantList);
