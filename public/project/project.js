@@ -169,13 +169,13 @@
                 var priorityText = "";
                 switch (project.priority) {
                     case "high":
-                        priorityText = "⭐️⭐️⭐️⭐️⭐️";
+                        priorityText = "上";
                         break;
                     case "mid":
-                        priorityText = "⭐️⭐️⭐️";
+                        priorityText = "中";
                         break;
                     case "low":
-                        priorityText = "⭐️";
+                        priorityText = "下";
                         break;
                     default:
                         priorityText = "";
@@ -201,17 +201,7 @@
                 $.get(`/projects/${itemId}/participants`, function (participants) {
                     var participantList = "";
                     participants.forEach(function (participant) {
-                        if (participant.id == project.user_id) {
-                            //TODO : 강조
-                            participantList += `
-                            <li>
-                                <div class="participant-manager">
-                                    <img src="${participant.picture}" class="rounded-circle">
-                                    <div>${participant.email}</div>
-                                </div>
-                            </li>`;
-                            
-                        } else {
+                        if (participant.id != project.user_id) {
                             participantList += `
                             <li>
                                 <div class="participant">
