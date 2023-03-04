@@ -107,6 +107,31 @@ func (s *sqliteHandler) getProjectsList(query string, userId int) []*Project {
 	return projects
 }
 
+func (s *sqliteHandler) GetProjectParticipants(id int) []*User {
+	users := []*User{}
+	query := `
+		SELECT user.id, user.email, user.picture
+        FROM user
+        JOIN project_users ON user.id = project_users.userId
+        WHERE project_users.projectId = ?`
+	rows, err := s.db.Query(query, id)
+
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		rows.Scan(
+			&user.Id,
+			&user.Email,
+			&user.Picture,
+		)
+		users = append(users, &user)
+	}
+	return users
+}
 func (s *sqliteHandler) GetProjectById(id int) *Project {
 	var project Project
 
@@ -138,7 +163,6 @@ func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 		ON projects.id = project_users.projectId
 		WHERE project_users.userId = ?
 		ORDER BY projects.createdAt DESC`
-
 	return s.getProjectsList(query, userId)
 }
 

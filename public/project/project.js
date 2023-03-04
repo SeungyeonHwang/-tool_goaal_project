@@ -167,13 +167,15 @@
                 modal.find("#project-createdAt").text(project.created_at);
 
                 $.get(`/projects/${itemId}/participants`, function (participants) {
+                    console.log(participants)
                     // 참여자 목록을 리스트 형태로 만들어서 모달창에 채우기
                     var participantList = "<ul>";
                     participants.forEach(function (participant) {
-                        participantList += `<li>${participant.name} (${participant.email})</li>`;
+                        participantList += `<li>${participant.email} (${participant.picture})</li>`;
                     });
                     participantList += "</ul>";
                     $("#project-participants").html(participantList);
+                    console.log(participantList)
                 });
             });
                 // // 모달창에 수정 및 삭제 버튼에 클릭 이벤트 추가하기

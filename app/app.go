@@ -52,6 +52,7 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/projects", a.project.AddProjectListHandler).Methods("POST")
 	r.HandleFunc("/projects", a.project.GetProjectListHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}", a.project.GetProjectHandler).Methods("GET")
+	r.HandleFunc("/projects/{id:[0-9]+}/participants", a.project.GetProjectParticipantListHandler).Methods("GET")
 
 	//TODO
 	// r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")

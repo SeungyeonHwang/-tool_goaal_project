@@ -1,7 +1,6 @@
 package project
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -46,10 +45,17 @@ func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	rd.JSON(w, http.StatusOK, list)
 }
 
+func (h *Handler) GetProjectParticipantListHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	projectId, _ := strconv.Atoi(vars["id"])
+	var list = make([]*model.User, 0)
+	list = h.db.GetProjectParticipants(projectId)
+	rd.JSON(w, http.StatusOK, list)
+}
+
 func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	log.Println(id)
 	project := h.db.GetProjectById(id)
 	rd.JSON(w, http.StatusOK, project)
 }
