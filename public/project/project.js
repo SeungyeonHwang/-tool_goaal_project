@@ -152,62 +152,78 @@
             sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
         }
 
+        // 프로젝트 상세 모달 출력
         $(".project-list").on("click", "li.project-item", function () {
             var itemId = $(this).data("id");
+
+            // AJAX 요청
             $.get(`/projects/${itemId}`, function (project) {
                 var modal = $("#project-detail-modal");
-                modal.find(".modal-title").text(project.name);
-                modal.find("#project-id").text(project.id);
-                modal.find("#project-name").text(project.name);
-                modal.find("#project-code").text(project.code);
-                modal.find("#project-color").text(project.color);
-                modal.find("#project-description").text(project.description);
+
+                // 프로젝트 정보 출력
+                var projectTitle = project.name + " (" + project.code + ")";
+                modal.find(".modal-title").text(projectTitle);
+                var headerColor = project.color || "#808080"; // 기본값으로 회색 지정
+                modal.find(".modal-header").attr("style", "background-color: " + headerColor + ";");
                 modal.find("#project-priority").text(project.priority);
-                modal.find("#project-userId").text(project.user_id);
+                $.get("/user/" + project.user_id, function (user) {
+                
+                //TODO : make tag
+                    modal.find("#project-userId").text(user.email);
+                //user.picture
+                });
+
+                modal.find("#project-description").text(project.description);
                 modal.find("#project-createdAt").text(project.created_at);
 
+                // 참여자 목록 출력
                 $.get(`/projects/${itemId}/participants`, function (participants) {
-                    console.log(participants)
-                    // 참여자 목록을 리스트 형태로 만들어서 모달창에 채우기
-                    var participantList = "<ul>";
+                    var participantList = "";
                     participants.forEach(function (participant) {
-                        participantList += `<li>${participant.email} (${participant.picture})</li>`;
+                        if (participant.id == project.user_id) {
+                            //TODO : 강조
+                            participantList += `<li>${participant.email} (${participant.picture})</li>`;
+                        } else {
+                            participantList += `<li>${participant.email} (${participant.picture})</li>`;
+                        }
                     });
-                    participantList += "</ul>";
-                    $("#project-participants").html(participantList);
-                    console.log(participantList)
+                    $(".participant-list ul").html(participantList);
                 });
-            });
-                // // 모달창에 수정 및 삭제 버튼에 클릭 이벤트 추가하기
-                // $("#project-edit-btn").off("click").on("click", function () {
-                //     // 수정 버튼 클릭 시 프로젝트 정보를 가지고 프로젝트 수정 모달창을 보여줌
-                //     $("#project-edit-modal #project-id").val(project.id);
-                //     $("#project-edit-modal #project-name").val(project.name);
-                //     $("#project-edit-modal #project-code").val(project.code);
-                //     $("#project-edit-modal #project-description").val(project.description);
-                //     $("#project-edit-modal .color-option").removeClass("active");
-                //     $("#project-edit-modal .color-option[data-color='" + project.color + "']").addClass("active");
-                //     $("#project-edit-modal #project-priority").val(project.priority);
-                //     $("#project-detail-modal").modal("hide");
-                //     $("#project-edit-modal").modal("show");
-                // });
 
-                // $("#project-delete-btn").off("click").on("click", function () {
-                //     // 삭제 버튼 클릭 시 프로젝트를 삭제함
-                //     if (confirm("Are you sure you want to delete this project?")) {
-                //         $.ajax({
-                //             url: `/projects/${project.id}`,
-                //             type: 'DELETE',
-                //             success: function () {
-                //                 // 삭제 성공 시 프로젝트 리스트를 업데이트함
-                //                 $.get('/projects', function (projects) {
-                //                     updateProjectList(projects);
-                //                 });
-                //             }
-                //         });
-                //         $("#project-detail-modal").modal("hide");
-                //     }
-                // });
+                // 모달 출력
+                modal.modal("show");
+            });
+
+            // // 모달창에 수정 및 삭제 버튼에 클릭 이벤트 추가하기
+            // $("#project-edit-btn").off("click").on("click", function () {
+            //     // 수정 버튼 클릭 시 프로젝트 정보를 가지고 프로젝트 수정 모달창을 보여줌
+            //     $("#project-edit-modal #project-id").val(project.id);
+            //     $("#project-edit-modal #project-name").val(project.name);
+            //     $("#project-edit-modal #project-code").val(project.code);
+            //     $("#project-edit-modal #project-description").val(project.description);
+            //     $("#project-edit-modal .color-option").removeClass("active");
+            //     $("#project-edit-modal .color-option[data-color='" + project.color + "']").addClass("active");
+            //     $("#project-edit-modal #project-priority").val(project.priority);
+            //     $("#project-detail-modal").modal("hide");
+            //     $("#project-edit-modal").modal("show");
+            // });
+
+            // $("#project-delete-btn").off("click").on("click", function () {
+            //     // 삭제 버튼 클릭 시 프로젝트를 삭제함
+            //     if (confirm("Are you sure you want to delete this project?")) {
+            //         $.ajax({
+            //             url: `/projects/${project.id}`,
+            //             type: 'DELETE',
+            //             success: function () {
+            //                 // 삭제 성공 시 프로젝트 리스트를 업데이트함
+            //                 $.get('/projects', function (projects) {
+            //                     updateProjectList(projects);
+            //                 });
+            //             }
+            //         });
+            //         $("#project-detail-modal").modal("hide");
+            //     }
+            // });
 
 
             $("#project-detail-modal").modal("show");

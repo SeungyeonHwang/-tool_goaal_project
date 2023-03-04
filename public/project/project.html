@@ -92,34 +92,51 @@
     </div>
 
     <div class="modal fade" id="project-detail-modal" tabindex="-1" role="dialog"
-    aria-labelledby="project-detail-modal-label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="project-detail-modal-label">Project Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Project ID: <span id="project-id"></span></p>
-                <p>Project Name: <span id="project-name"></span></p>
-                <p>Project Code: <span id="project-code"></span></p>
-                <p>Project Description: <span id="project-description"></span></p>
-                <p>Project Color: <span id="project-color"></span></p>
-                <p>Project Priority: <span id="project-priority"></span></p>
-                <p>CreatedBy: <span id="project-userId"></span></p>
-                <p>CreatedDate: <span id="project-createdAt"></span></p>
-                <p>Participants: <span id="project-participants"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="edit-project-btn">Edit</button>
-                <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        aria-labelledby="project-detail-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="project-detail-modal-label">Project Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="project-info">
+                        <span><i class="fa fa-star"></i> <strong>優先度</strong>
+                            <br>
+                            <span id="project-priority"></span>
+                        </span>
+                        <br>
+                        <br>
+                        <span><i class="fa fa-circle"></i> <strong>担当者</strong>
+                            <br>
+                            <span id="project-userId"></span>
+                        </span>
+                        <br>
+                        <br>
+                        <span><i class="fa fa-calendar"></i><strong>作成日</strong>
+                            <br>
+                            <span id="project-createdAt"></span>
+                        </span>
+                        <br>
+                        <br>
+                    </div>
+                    <div class="project-description" id="project-description"></div>
+                    <br>
+                    <div class="participant-list">
+                        <span><i class="fa fa-user"></i> <strong>参加者</strong></span>
+                        <ul></ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="edit-project-btn">Edit</button>
+                    <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 </body>
 

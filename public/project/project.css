@@ -182,33 +182,40 @@
 
 /* 프로젝트 모달 스타일 */
 .modal-dialog {
-    top: 15%;
+    max-width: 800px;
+    margin: auto;
+    position: relative;
+    top: 10%;
+    transform: translateY(10%);
 }
 
 .modal-content {
+    background-color: #fff; /* 모달 배경색 지정 */
     border-radius: 0;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1); /* 모달 그림자 효과 추가 */
 }
 
 .modal-header {
     border-bottom: none;
+    background-color: #f1f1f1; /* 헤더 배경색 지정 */
 }
 
-.modal-body p {
-    margin-bottom: 10px;
+.modal-body {
+    padding: 1.5rem; /* 본문 패딩값 조정 */
 }
 
-.modal-body .participants-list {
+.modal-body .participant-list ul {
     list-style: none;
     padding-left: 0;
     margin-bottom: 0;
 }
 
-.modal-body .participants-list li {
+.modal-body .participant-list li {
     display: inline-block;
     margin-right: 5px;
 }
 
-.modal-body .participants-list li img {
+.modal-body .participant-list li img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -216,6 +223,7 @@
 
 .modal-footer {
     border-top: none;
+    background-color: #f1f1f1; /* 푸터 배경색 지정 */
 }
 
 .modal-footer button {
@@ -224,4 +232,9 @@
 
 .modal-footer button:last-child {
     margin-right: 0;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
 }
