@@ -34,6 +34,7 @@ type DBHandler interface {
 	//PROJECT
 	AddProject(name string, code string, description string, color string, priority string, userId int) *Project
 	GetProjects(userId int, sort string) []*Project
+	GetProjectById(id int) *Project
 
 	//TODO
 	GetTodos(sessionId string, sort string) []*Todo

@@ -1,10 +1,13 @@
 package project
 
 import (
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/SeungyeonHwang/tool-goaal/login"
 	"github.com/SeungyeonHwang/tool-goaal/model"
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 )
 
@@ -41,4 +44,12 @@ func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	var list = make([]*model.Project, 0)
 	list = h.db.GetProjects(userId, sort)
 	rd.JSON(w, http.StatusOK, list)
+}
+
+func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	log.Println(id)
+	project := h.db.GetProjectById(id)
+	rd.JSON(w, http.StatusOK, project)
 }

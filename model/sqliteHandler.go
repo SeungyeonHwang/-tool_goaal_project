@@ -107,6 +107,29 @@ func (s *sqliteHandler) getProjectsList(query string, userId int) []*Project {
 	return projects
 }
 
+func (s *sqliteHandler) GetProjectById(id int) *Project {
+	var project Project
+
+	query := "SELECT id, name, code, description, color, priority, createdAt, userId FROM projects WHERE id = ?"
+	row := s.db.QueryRow(query, id)
+	err := row.Scan(
+		&project.Id,
+		&project.Name,
+		&project.Code,
+		&project.Description,
+		&project.Color,
+		&project.Priority,
+		&project.CreatedAt,
+		&project.UserId,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &project
+}
+
 func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 	query := `
 		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId
