@@ -59,3 +59,11 @@ func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	project := h.db.GetProjectById(id)
 	rd.JSON(w, http.StatusOK, project)
 }
+
+func (h *Handler) CheckProjectEditAuthHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	sessionId := login.GetSessionId(r)
+	canEdit := h.db.CheckProjectEditAuth(id, sessionId)
+	rd.JSON(w, http.StatusOK, canEdit)
+}

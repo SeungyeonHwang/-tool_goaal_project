@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	"github.com/SeungyeonHwang/tool-goaal/util"
 	"github.com/leekchan/timeutil"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -153,6 +154,25 @@ func (s *sqliteHandler) GetProjectById(id int) *Project {
 	}
 
 	return &project
+}
+
+func (s *sqliteHandler) CheckProjectEditAuth(id int, sessionId string) bool {
+	var userSessionId string
+	f, err := util.ParseFloat(sessionId)
+	if err != nil {
+		panic(err)
+	}
+	sessionIdStr := util.FormatScientific(f)
+
+	err = s.db.QueryRow(`
+						SELECT u.sessionId
+						FROM projects p
+						JOIN user u ON p.userId = u.id
+						WHERE p.id=?`, id).Scan(&userSessionId)
+	if err != nil {
+		panic(err)
+	}
+	return userSessionId == sessionIdStr
 }
 
 func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
