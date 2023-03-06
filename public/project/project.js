@@ -161,12 +161,40 @@
                 .done(function (project) {
                     var modal = $("#project-detail-modal");
                     var projectTitle = project.name + " (" + project.code + ")";
+                    var participantsList = [];
 
                     // Edit 버튼 표시 여부 설정
                     $.get(`/projects/${itemId}/check-edit-auth`, function (response) {
                         if (response) {
-                            $("#edit-project-btn").show();
-                            // Edit 버튼 클릭 시 이벤트 처리
+                            $("#edit-project-form").hide();
+                            $("#show-edit-project-btn").show().on("click", function () {
+                                    // 각 폼 필드에 해당하는 프로젝트 상세 정보 적용하기
+                                    $("#edit-project-form").show();
+                                    $("#project-name-modal").val(project.name);
+                                    $("#project-code-modal").val(project.code);
+                                    $("#project-priority-modal").val(project.priority);
+                                    var color = project.color || "#A9A9A9";
+                                    $("#color-options-modal .color-option").removeClass("active");
+                                    $("#color-options-modal .color-option[data-color='" + color + "']").addClass('active');
+                                    $("#project-description").val(project.description);
+                                    $("#project-manager").val(project.manager);
+                                    console.log(participantsList)
+                                    // 참가자 리스트 초기화
+                                    // $("#available-users").html("");
+                                    // $("#selected-users").html("");
+                                    // // 사용자 리스트에서 프로젝트 참가자 선택하기
+                                    // $.each(project.users, function (i, user) {
+                                    //     $("#selected-users").append(`<option value="${user}">${user}</option>`);
+                                    // });
+                                    // // 사용자 리스트에서 프로젝트 참가자 제외하기
+                                    // $.each(users, function (i, user) {
+                                    //     if (!project.users.includes(user)) {
+                                    //         $("#available-users").append(`<option value="${user}">${user}</option>`);
+                                    //     }
+                                    // });
+
+
+                            });
                             $("#edit-project-btn").on("click", function () {
                                 // HTTP PUT 요청
                                 $.ajax({
@@ -183,18 +211,22 @@
                                     }
                                 });
                             });
+
+                            // 모달 숨김 버튼 클릭 시 이벤트 처리
+                            $("#modal-close-btn").on("click", function () {
+                                $("#edit-project-form").hide();
+                            });
                         } else {
-                            $("#edit-project-btn").hide();
+                            $("#show-project-btn").hide();
                         }
-                    })
-                        .fail(function () {
+                    }).fail(function () {
                             // 요청 실패 시 실행할 코드
                             alert("프로젝트 수정 권한 체크에 실패했습니다.");
                             $("#edit-project-btn").hide();
                         });
 
                     modal.find(".modal-title").text(projectTitle);
-                    var headerColor = project.color || "#808080"; // 기본값으로 회색 지정
+                    var headerColor = project.color || "#A9A9A9"; // 기본값으로 회색 지정
                     modal.find(".modal-header").attr("style", "background-color: " + headerColor + ";");
                     modal.find(".modal-footer").attr("style", "background-color: " + headerColor + ";");
                     var priorityText = "";
@@ -228,8 +260,9 @@
 
                     // 참여자 목록 출력
                     $.get(`/projects/${itemId}/participants`, function (participants) {
-                        var participantList = "";
+                        var participantList =""
                         participants.forEach(function (participant) {
+                            participantsList.push(participant.email)
                             if (participant.id != project.user_id) {
                                 participantList += `
                             <li>

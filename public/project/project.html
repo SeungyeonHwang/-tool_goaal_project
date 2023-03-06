@@ -129,7 +129,7 @@
                         </div>
                     </div>
                     <hr>
-                        <div class="mb-3">
+                    <div class="mb-3">
                         <i class="fa fa-file-text text-info"></i>
                         <span class="font-weight-bold ml-1">内容</span>
                     </div>
@@ -142,9 +142,79 @@
                     <div class="participant-list">
                         <ul></ul>
                     </div>
+                    <form id="edit-project-form">
+                        <hr>
+                        <div class="form-group">
+                            <label for="project-name" class="font-weight-bold">プロジェクト名</label>
+                            <input type="text" class="form-control" id="project-name-modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-code" class="font-weight-bold">プロジェクト・コード</label>
+                            <input type="text" class="form-control" id="project-code-modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-priority" class="font-weight-bold">優先度</label>
+                            <select class="form-control" id="project-priority-modal">
+                                <option value="high">上</option>
+                                <option value="mid">中</option>
+                                <option value="low">下</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-color" class="font-weight-bold">色</label>
+                            <div id="color-options-modal">
+                                <div class="color-option gray" data-color="#A9A9A9"></div>
+                                <div class="color-option blue" data-color="#0091ff"></div>
+                                <div class="color-option red" data-color="#e05454"></div>
+                                <div class="color-option green" data-color="#76a676"></div>
+                                <div class="color-option pink" data-color="#ffc0cb"></div>
+                                <div class="color-option brown" data-color="#643d3d"></div>
+                                <div class="color-option yellow" data-color="#f0f068"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description" class="font-weight-bold">内容</label>
+                            <textarea class="form-control" id="project-description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-manager" class="font-weight-bold">担当者</label>
+                            <select class="form-control" id="project-manager">
+                                <option value="user1">User 1</option>
+                                <option value="user2">User 2</option>
+                                <option value="user3">User 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-participants" class="font-weight-bold">参加者</label>
+                            <div class="row">
+                                <div class="col-5">
+                                    <select multiple="multiple" size="8" class="form-control" id="available-users">
+                                        <option value="user1">User 1</option>
+                                        <option value="user2">User 2</option>
+                                        <option value="user3">User 3</option>
+                                        <option value="user4">User 4</option>
+                                        <option value="user5">User 5</option>
+                                        <option value="user6">User 6</option>
+                                        <option value="user7">User 7</option>
+                                        <option value="user8">User 8</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" id="add-user-btn" class="btn btn-primary btn-block">→</button>
+                                    <button type="button" id="remove-user-btn" class="btn btn-primary btn-block mt-2">←</button>
+                                </div>
+                                <div class="col-5">
+                                    <select multiple="multiple" size="8" class="form-control" id="selected-users"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-primary" id="edit-project-btn">更新</button>
+                        <button type="button" class="btn btn-light" id="modal-close-btn">閉じる</button>
+                        </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="edit-project-btn">Edit</button>
+                    <button type="button" class="btn btn-primary" id="show-edit-project-btn">Edit</button>
                     <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                 </div>
