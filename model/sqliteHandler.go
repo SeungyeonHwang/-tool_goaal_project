@@ -133,6 +133,33 @@ func (s *sqliteHandler) GetProjectParticipants(id int) []*User {
 	}
 	return users
 }
+
+func (s *sqliteHandler) GetProjectAvailableUsers(id int) []*User {
+	users := []*User{}
+	query := `
+	SELECT user.id, user.email, user.picture
+	FROM user
+	LEFT JOIN project_users ON user.id = project_users.userId
+	WHERE project_users.projectId is NULL OR project_users.projectId != ?`
+	rows, err := s.db.Query(query, id)
+
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		rows.Scan(
+			&user.Id,
+			&user.Email,
+			&user.Picture,
+		)
+		users = append(users, &user)
+	}
+	return users
+}
+
 func (s *sqliteHandler) GetProjectById(id int) *Project {
 	var project Project
 

@@ -53,6 +53,14 @@ func (h *Handler) GetProjectParticipantListHandler(w http.ResponseWriter, r *htt
 	rd.JSON(w, http.StatusOK, list)
 }
 
+func (h *Handler) GetProjectAvailableUsersListHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	projectId, _ := strconv.Atoi(vars["id"])
+	var list = make([]*model.User, 0)
+	list = h.db.GetProjectAvailableUsers(projectId)
+	rd.JSON(w, http.StatusOK, list)
+}
+
 func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])

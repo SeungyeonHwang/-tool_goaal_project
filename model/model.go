@@ -35,6 +35,7 @@ type DBHandler interface {
 	AddProject(name string, code string, description string, color string, priority string, userId int) *Project
 	GetProjects(userId int, sort string) []*Project
 	GetProjectParticipants(projectId int) []*User
+	GetProjectAvailableUsers(projectId int) []*User
 	GetProjectById(id int) *Project
 	CheckProjectEditAuth(id int, sessionId string) bool
 
