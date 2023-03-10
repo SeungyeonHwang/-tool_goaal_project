@@ -11,8 +11,6 @@
     codeHeader.querySelector(".fa-chevron-up").classList.add(initialClass);
     priorityHeader.querySelector(".fa-chevron-up").classList.add(initialClass);
     colorHeader.querySelector(".fa-chevron-up").classList.add(initialClass);
-    var availableUsersLoaded = false;
-    var participantsLoaded = false;
 
     $(function () {
         var projectListItem = $('.project-list');
@@ -165,6 +163,7 @@
                     var projectTitle = project.name + " (" + project.code + ")";
                     var participantsList = [];
                     var availableUsersList = [];
+                    var availableUsersLoaded = false;
 
                     // Edit 버튼 표시 여부 설정
                     $.get(`/projects/${itemId}/check-edit-auth`, function (response) {
@@ -181,29 +180,25 @@
                                 $("#color-options-modal .color-option[data-color='" + color + "']").addClass('active');
                                 $("#project-description-text").val(project.description);
 
-                                if (!participantsLoaded) {
-                                    var select = $('#project-manager');
-                                    $.each(participantsList, function (_, participant) {
-                                        select.append($('<option>', {
-                                            value: participant['id'],
-                                            text: participant['email']
-                                        }));
-                                    });
-                                    select.val(project.user_id);
-                                    participantsLoaded = true
-                                }
+                                var select = $('#project-manager');
+                                $.each(participantsList, function (_, participant) {
+                                    select.append($('<option>', {
+                                        value: participant['id'],
+                                        text: participant['email']
+                                    }));
+                                });
+                                select.val(project.user_id);
+
                                 var availableUsersSelect = $('#available-users');
                                 var selectedUsersSelect = $('#selected-users');
                                 if (!availableUsersLoaded) {
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
-                                            if (availableUser.id != project.user_id) {
-                                                availableUsersList.push({ id: availableUser.id, email: availableUser.email });
-                                                availableUsersSelect.append($('<option>', {
-                                                    value: availableUser.id,
-                                                    text: availableUser.email
-                                                }));
-                                            }
+                                            availableUsersList.push({ id: availableUser.id, email: availableUser.email });
+                                            availableUsersSelect.append($('<option>', {
+                                                value: availableUser.id,
+                                                text: availableUser.email
+                                            }));
                                         });
                                         participantsList.forEach(function (participant) {
                                             if (participant.id != project.user_id) {
@@ -217,7 +212,7 @@
                                         .fail(function (errorThrown) {
                                             console.error(`Failed to load available users: ${errorThrown}`);
                                         })
-                                        .always(function () {
+                                        .always(function() {
                                             // $.get() 함수가 완료되면 플래그 변수를 true로 설정합니다.
                                             availableUsersLoaded = true;
                                         });
@@ -344,7 +339,7 @@
             // });
 
             // $("#project-delete-btn").off("click").on("click", function () {
-            // 삭제 버튼 클릭 시 프로젝트를 삭제함
+                // 삭제 버튼 클릭 시 프로젝트를 삭제함
             //     if (confirm("Are you sure you want to delete this project?")) {
             //         $.ajax({
             //             url: `/projects/${project.id}`,

@@ -164,11 +164,12 @@
                     var modal = $("#project-detail-modal");
                     var projectTitle = project.name + " (" + project.code + ")";
                     var participantsList = [];
-                    var availableUsersList = [];
+                    var availableUsersList = [];                
 
                     // Edit 버튼 표시 여부 설정
                     $.get(`/projects/${itemId}/check-edit-auth`, function (response) {
                         if (response) {
+                            console.log(participantsList)
                             $("#edit-project-form").hide();
                             $("#show-edit-project-btn").show().on("click", function () {
                                 // 각 폼 필드에 해당하는 프로젝트 상세 정보 적용하기
@@ -197,13 +198,14 @@
                                 if (!availableUsersLoaded) {
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
-                                            if (availableUser.id != project.user_id) {
-                                                availableUsersList.push({ id: availableUser.id, email: availableUser.email });
-                                                availableUsersSelect.append($('<option>', {
-                                                    value: availableUser.id,
-                                                    text: availableUser.email
-                                                }));
-                                            }
+                                            console.log(availableUser.email)
+                                            if (participant.id != project.user_id) {
+                                            availableUsersList.push({ id: availableUser.id, email: availableUser.email });
+                                            availableUsersSelect.append($('<option>', {
+                                                value: availableUser.id,
+                                                text: availableUser.email
+                                            }));
+                                        }
                                         });
                                         participantsList.forEach(function (participant) {
                                             if (participant.id != project.user_id) {
@@ -217,7 +219,7 @@
                                         .fail(function (errorThrown) {
                                             console.error(`Failed to load available users: ${errorThrown}`);
                                         })
-                                        .always(function () {
+                                        .always(function() {
                                             // $.get() 함수가 완료되면 플래그 변수를 true로 설정합니다.
                                             availableUsersLoaded = true;
                                         });
@@ -344,7 +346,7 @@
             // });
 
             // $("#project-delete-btn").off("click").on("click", function () {
-            // 삭제 버튼 클릭 시 프로젝트를 삭제함
+                // 삭제 버튼 클릭 시 프로젝트를 삭제함
             //     if (confirm("Are you sure you want to delete this project?")) {
             //         $.ajax({
             //             url: `/projects/${project.id}`,

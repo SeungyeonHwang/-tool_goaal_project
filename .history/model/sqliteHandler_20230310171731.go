@@ -137,7 +137,7 @@ func (s *sqliteHandler) GetProjectParticipants(id int) []*User {
 func (s *sqliteHandler) GetProjectAvailableUsers(id int) []*User {
 	users := []*User{}
 	query := `
-	SELECT DISTINCT user.id, user.email, user.picture
+	SELECT user.id, user.email, user.picture
 	FROM user
 	LEFT JOIN project_users ON user.id = project_users.userId
 	WHERE project_users.projectId is NULL OR project_users.projectId != ?`
