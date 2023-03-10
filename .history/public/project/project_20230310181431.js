@@ -235,7 +235,7 @@
                                     selectedOptions.remove();
                                 });
                             });
-                            //TODO : 수정 API
+                            //TODO
                             $("#edit-project-btn").on("click", function () {
                                 // HTTP PUT 요청
                                 $.ajax({
