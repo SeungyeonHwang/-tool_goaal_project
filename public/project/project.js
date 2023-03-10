@@ -236,7 +236,8 @@
                                 });
                             });
                             //TODO : 수정 API
-                            $("#edit-project-btn").on("click", function () {
+                            $("#edit-project-btn").on("click", function (event) {
+                                event.preventDefault();
                                 // HTTP PUT 요청
                                 $.ajax({
                                     url: `/projects/${itemId}`,
@@ -244,11 +245,12 @@
                                     data: {
                                         name: $("#project-name-modal").val(),
                                         code: $("#project-code-modal").val(),
-                                        priority: $("#project-priority-modal").val(),
-                                        color: $("#color-options-modal .color-option.active").data("color"),
                                         description: $("#project-description-text").val(),
+                                        color: $("#color-options-modal .color-option.active").data("color"),
+                                        priority: $("#project-priority-modal").val(),
                                         managerId: $("#project-manager").val(),
-                                        participantIds: $("#selected-users option").map(function () { return $(this).val(); }).get()
+                                        participantIds: $("#selected-users option").map(function () { return $(this).val(); }).get(),
+                                        availableUserIds: $("#available-users option").map(function () { return $(this).val(); }).get()
                                     },
                                     success: function () {
                                         console.log("프로젝트 정보가 업데이트되었습니다.");

@@ -75,3 +75,30 @@ func (h *Handler) CheckProjectEditAuthHandler(w http.ResponseWriter, r *http.Req
 	canEdit := h.db.CheckProjectEditAuth(id, sessionId)
 	rd.JSON(w, http.StatusOK, canEdit)
 }
+
+func (h *Handler) UpdateProjectHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+
+	err := r.ParseForm()
+	if err != nil {
+		rd.JSON(w, http.StatusBadRequest, "잘못된 요청입니다.")
+		return
+	}
+
+	name := r.FormValue("name")
+	code := r.FormValue("code")
+	description := r.FormValue("description")
+	color := r.FormValue("color")
+	priority := r.FormValue("priority")
+
+	userIdStr := r.FormValue("managerId")
+	userId, _ := strconv.Atoi(userIdStr)
+
+	project := h.db.UpdateProject(id, name, code, description, color, priority, userId)
+
+	//project_user 수정하기 - available , selected
+	// participantIds := r.Form["participantIds[]"]
+	// availableUserIds := r.Form["availableUserIds[]"]
+	rd.JSON(w, http.StatusOK, project)
+}

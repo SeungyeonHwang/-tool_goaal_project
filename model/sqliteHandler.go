@@ -202,6 +202,27 @@ func (s *sqliteHandler) CheckProjectEditAuth(id int, sessionId string) bool {
 	return userSessionId == sessionIdStr
 }
 
+func (s *sqliteHandler) UpdateProject(id int, name string, code string, description string, color string, priority string, userId int) *Project {
+	stmt, err := s.db.Prepare("UPDATE projects SET name=?, code=?, description=?, color=?, priority=?, userId=? WHERE id=?")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = stmt.Exec(name, code, description, color, priority, userId, id)
+	if err != nil {
+		panic(err)
+	}
+
+	var project Project
+	row := s.db.QueryRow("SELECT id, name, code, description, color, priority, userId FROM projects WHERE id = ?", id)
+	err = row.Scan(&project.Id, &project.Name, &project.Code, &project.Description, &project.Color, &project.Priority, &project.UserId)
+	if err != nil {
+		panic(err)
+	}
+
+	return &project
+}
+
 func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 	query := `
 		SELECT projects.id, projects.name, projects.code, projects.description, projects.color, projects.priority, projects.createdAt, projects.userId

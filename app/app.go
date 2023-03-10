@@ -55,6 +55,7 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/projects/{id:[0-9]+}/check-edit-auth", a.project.CheckProjectEditAuthHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}/participants", a.project.GetProjectParticipantListHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}/availableUsers", a.project.GetProjectAvailableUsersListHandler).Methods("GET")
+	r.HandleFunc("/projects/{id:[0-9]+}", a.project.UpdateProjectHandler).Methods("PUT")
 
 	//TODO
 	// r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
