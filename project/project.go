@@ -95,10 +95,10 @@ func (h *Handler) UpdateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	userIdStr := r.FormValue("managerId")
 	userId, _ := strconv.Atoi(userIdStr)
 
-	project := h.db.UpdateProject(id, name, code, description, color, priority, userId)
+	participantIds := r.Form["participantIds[]"]
+	availableUserIds := r.Form["availableUserIds[]"]
 
-	//project_user 수정하기 - available , selected
-	// participantIds := r.Form["participantIds[]"]
-	// availableUserIds := r.Form["availableUserIds[]"]
+	project := h.db.UpdateProject(id, name, code, description, color, priority, userId, participantIds, availableUserIds)
+
 	rd.JSON(w, http.StatusOK, project)
 }

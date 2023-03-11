@@ -139,8 +139,8 @@ func (s *sqliteHandler) GetProjectAvailableUsers(id int) []*User {
 	query := `
 	SELECT DISTINCT user.id, user.email, user.picture
 	FROM user
-	LEFT JOIN project_users ON user.id = project_users.userId
-	WHERE project_users.projectId is NULL OR project_users.projectId != ?`
+	LEFT JOIN project_users ON user.id = project_users.userId AND project_users.projectId = ?
+	WHERE project_users.userId IS NULL;`
 	rows, err := s.db.Query(query, id)
 
 	if err != nil {
@@ -202,7 +202,7 @@ func (s *sqliteHandler) CheckProjectEditAuth(id int, sessionId string) bool {
 	return userSessionId == sessionIdStr
 }
 
-func (s *sqliteHandler) UpdateProject(id int, name string, code string, description string, color string, priority string, userId int) *Project {
+func (s *sqliteHandler) UpdateProject(id int, name string, code string, description string, color string, priority string, userId int, participantIds []string, availableUserIds []string) *Project {
 	stmt, err := s.db.Prepare("UPDATE projects SET name=?, code=?, description=?, color=?, priority=?, userId=? WHERE id=?")
 	if err != nil {
 		panic(err)
@@ -218,6 +218,40 @@ func (s *sqliteHandler) UpdateProject(id int, name string, code string, descript
 	err = row.Scan(&project.Id, &project.Name, &project.Code, &project.Description, &project.Color, &project.Priority, &project.UserId)
 	if err != nil {
 		panic(err)
+	}
+
+	//참가자 추가
+	for _, participantId := range participantIds {
+		var count int
+		row := s.db.QueryRow("SELECT COUNT(*) FROM project_users WHERE projectId=? AND userId=?", id, participantId)
+		err := row.Scan(&count)
+		if err != nil {
+			panic(err)
+		}
+		if count == 0 {
+			_, err = s.db.Exec("INSERT INTO project_users(projectId, userId) VALUES(?, ?)", id, participantId)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	// 참가자 제거
+	for _, availableUserId := range availableUserIds {
+		// 사용자가 프로젝트에 참여 중인지 확인
+		var count int
+		row := s.db.QueryRow("SELECT COUNT(*) FROM project_users WHERE projectId=? AND userId=?", project.Id, availableUserId)
+		err := row.Scan(&count)
+		if err != nil {
+			panic(err)
+		}
+		if count > 0 {
+			// 사용자가 프로젝트에 참가 중이므로 제거
+			_, err = s.db.Exec("DELETE FROM project_users WHERE projectId=? AND userId=?", id, availableUserId)
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
 
 	return &project

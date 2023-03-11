@@ -50,7 +50,7 @@
             cache: true
         });
 
-        var addItem = function (item) {
+        var createListItemHtml = function (item) {
             var color = item.color || "#A9A9A9";
             var priorityText = ""; // 우선순위에 따른 한자 표시를 위한 문자열 변수
             var listColor = "";
@@ -71,29 +71,42 @@
             }
             var listColorStyle = listColor ? "style='background-color: " + listColor + ";'" : "";
 
-            $.get("/user/" + item.user_id, function (user) {
-                var pictureUrl = user.picture || "";
-
-                var listItemHtml =
-                    "<li class='project-item'" + listColorStyle + " data-id='" + item.id + "'>" +
-                    "<div class='project-color' style='background-color: " + color + ";'></div>" +
-                    "<div class='project-name'>" + item.name + "</div>" +
-                    "<div class='project-code'>&nbsp;(" + item.code + ")</div>" +
-                    "<div class='project-priority'>" + priorityText + "</div>" +
-                    "<img class='project-picture' src='" + pictureUrl + "'/>" +
-                    "</li>";
-                projectListItem.append(listItemHtml);
-            });
+            return "<li class='project-item'" + listColorStyle + " data-id='" + item.id + "'>" +
+                "<div class='project-color' style='background-color: " + color + ";'></div>" +
+                "<div class='project-name'>" + item.name + "</div>" +
+                "<div class='project-code'>&nbsp;(" + item.code + ")</div>" +
+                "<div class='project-priority'>" + priorityText + "</div>" +
+                "<img class='project-picture' src='" + item.user_picture + "'/>" +
+                "</li>";
         };
 
         $.get('/projects', function (items) {
-            originalItems = items
-            items.forEach(e => {
-                addItem(e);
+            originalItems = items;
+            var users = [];
+            items.forEach(function (item) {
+                users.push($.get("/user/" + item.user_id));
+            });
+            $.when.apply(null, users).done(function () {
+                for (var i = 0; i < arguments.length; i++) {
+                    var user = arguments[i][0];
+                    items[i].user_picture = user.picture || "";
+                    var listItemHtml = createListItemHtml(items[i]);
+                    addItem(listItemHtml);
+                }
             });
         });
 
+        var addItem = function (listItemHtml) {
+            projectListItem.append(listItemHtml);
+        };
+
         $("#color-options .color-option").click(function () {
+            $(".color-option").removeClass("active");
+            $(this).addClass("active");
+            projectColor.val($(this).data("color"));
+        });
+
+        $("#color-options-modal .color-option").click(function () {
             $(".color-option").removeClass("active");
             $(this).addClass("active");
             projectColor.val($(this).data("color"));
@@ -103,7 +116,6 @@
             var searchValue = $(this).val().toLowerCase();
             if (searchValue === '') {
                 $('.project-item').show();
-                $('.project-list').html('');
                 originalItems.forEach(e => {
                     addItem(e);
                 });
@@ -157,6 +169,8 @@
         // 프로젝트 상세 모달 출력
         $(".project-list").on("click", "li.project-item", function () {
             var itemId = $(this).data("id");
+            $("#edit-project-form").hide();
+            $("#show-edit-project-btn").hide();
 
             // AJAX 요청
             $.get(`/projects/${itemId}`)
@@ -169,7 +183,6 @@
                     // Edit 버튼 표시 여부 설정
                     $.get(`/projects/${itemId}/check-edit-auth`, function (response) {
                         if (response) {
-                            $("#edit-project-form").hide();
                             $("#show-edit-project-btn").show().on("click", function () {
                                 // 각 폼 필드에 해당하는 프로젝트 상세 정보 적용하기
                                 $("#edit-project-form").show();
@@ -198,6 +211,7 @@
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
                                             if (availableUser.id != project.user_id) {
+                                                // TODO: 참가자에 있을 경우 넣지 않기
                                                 availableUsersList.push({ id: availableUser.id, email: availableUser.email });
                                                 availableUsersSelect.append($('<option>', {
                                                     value: availableUser.id,
@@ -236,29 +250,29 @@
                                 });
                             });
                             //TODO : 수정 API
-                            $("#edit-project-btn").on("click", function (event) {
-                                event.preventDefault();
-                                // HTTP PUT 요청
-                                $.ajax({
-                                    url: `/projects/${itemId}`,
-                                    type: "PUT",
-                                    data: {
-                                        name: $("#project-name-modal").val(),
-                                        code: $("#project-code-modal").val(),
-                                        description: $("#project-description-text").val(),
-                                        color: $("#color-options-modal .color-option.active").data("color"),
-                                        priority: $("#project-priority-modal").val(),
-                                        managerId: $("#project-manager").val(),
-                                        participantIds: $("#selected-users option").map(function () { return $(this).val(); }).get(),
-                                        availableUserIds: $("#available-users option").map(function () { return $(this).val(); }).get()
-                                    },
-                                    success: function () {
-                                        console.log("프로젝트 정보가 업데이트되었습니다.");
-                                    },
-                                    error: function () {
-                                        console.log("프로젝트 정보 업데이트에 실패했습니다.");
-                                    }
-                                });
+                            $("#edit-project-btn").on("click", function () {
+                                if (confirm("프로젝트 정보를 업데이트 하시겠습니까?")) { // 동의 메시지 출력
+                                    $.ajax({
+                                        url: `/projects/${itemId}`,
+                                        type: "PUT",
+                                        data: {
+                                            name: $("#project-name-modal").val(),
+                                            code: $("#project-code-modal").val(),
+                                            description: $("#project-description-text").val(),
+                                            color: $("#color-options-modal .color-option.active").data("color"),
+                                            priority: $("#project-priority-modal").val(),
+                                            managerId: $("#project-manager").val(),
+                                            participantIds: $("#selected-users option").map(function () { return $(this).val(); }).get(),
+                                            availableUserIds: $("#available-users option").map(function () { return $(this).val(); }).get()
+                                        },
+                                        success: function () {
+                                            alert("프로젝트 정보가 업데이트되었습니다.");
+                                        },
+                                        error: function () {
+                                            alert("프로젝트 정보 업데이트에 실패했습니다.");
+                                        }
+                                    });
+                                }
                             });
 
                             // 모달 숨김 버튼 클릭 시 이벤트 처리
