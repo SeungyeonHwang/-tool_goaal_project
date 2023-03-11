@@ -16,12 +16,12 @@ type Handler struct {
 	db model.DBHandler
 }
 
-type Success struct {
-	Success bool `json:"success"`
-}
-
 func NewHandler(db model.DBHandler) *Handler {
 	return &Handler{db}
+}
+
+type Success struct {
+	Success bool `json:"success"`
 }
 
 func (h *Handler) IndexHandler(w http.ResponseWriter, r *http.Request) {

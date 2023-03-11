@@ -33,7 +33,7 @@
                 item.id +
                 "' style='display: flex; justify-content: space-between;'>" +
                 "<div class='profile-image-container' style='margin-right: 10px;'>" +
-                "<img class='profile-image' src='" + picture + "' style='width:30px; height:30px;'/>" +
+                "<img class='profile-image' src='" + picture + "' style='width:25px; height:25px;'/>" +
                 "</div>" +
                 "<div style='align-self: center; flex: 1;'>" +
                 "<div class='form-check'>" +

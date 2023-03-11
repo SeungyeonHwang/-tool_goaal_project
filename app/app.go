@@ -6,6 +6,7 @@ import (
 	"github.com/SeungyeonHwang/tool-goaal/login"
 	"github.com/SeungyeonHwang/tool-goaal/model"
 	"github.com/SeungyeonHwang/tool-goaal/project"
+	"github.com/SeungyeonHwang/tool-goaal/todo"
 	"github.com/SeungyeonHwang/tool-goaal/user"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
@@ -15,6 +16,7 @@ type AppHandler struct {
 	http.Handler
 	db      model.DBHandler
 	project *project.Handler
+	todo    *todo.Handler
 	user    *user.Handler
 }
 
@@ -37,6 +39,7 @@ func MakeHandler(dbDir string) *AppHandler {
 		Handler: n,
 		db:      model.NewDBHandler(dbDir),
 		project: project.NewHandler(model.NewDBHandler(dbDir)),
+		todo:    todo.NewHandler(model.NewDBHandler(dbDir)),
 		user:    user.NewHandler(model.NewDBHandler(dbDir)),
 	}
 
@@ -60,18 +63,18 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/projects/{id:[0-9]+}/todos", a.project.GoToTodoHandler).Methods("GET")
 
 	//TODO
-	// r.HandleFunc("/todos", t.getTodoListHandler).Methods("GET")
-	// r.HandleFunc("/todos/sorted-by-user", t.getTodoListHandler).Methods("GET")
-	// r.HandleFunc("/todos/sorted-by-completed", t.getTodoListHandler).Methods("GET")
-	// r.HandleFunc("/todos/sorted", t.getTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos", a.todo.GetTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted-by-user", a.todo.GetTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted-by-completed", a.todo.GetTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/sorted", a.todo.GetTodoListHandler).Methods("GET")
 
-	// r.HandleFunc("/complete-todo/{id:[0-9]+}", t.completeTodoListHandler).Methods("GET")
-	// r.HandleFunc("/todos/progress", t.getTodoProgressHandler).Methods("GET")
+	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.todo.CompleteTodoListHandler).Methods("GET")
+	r.HandleFunc("/todos/progress", a.todo.GetTodoProgressHandler).Methods("GET")
 
-	// r.HandleFunc("/todos", t.addTodoListHandler).Methods("POST")
+	r.HandleFunc("/todos", a.todo.AddTodoListHandler).Methods("POST")
 
-	// r.HandleFunc("/todos/{id:[0-9]+}", t.removeTodoListHandler).Methods("DELETE")
-	// r.HandleFunc("/todos-completed-clear", t.removeCompletedTodoListHandler).Methods("DELETE")
+	r.HandleFunc("/todos/{id:[0-9]+}", a.todo.RemoveTodoListHandler).Methods("DELETE")
+	// r.HandleFunc("/todos-completed-clear", a.todo.RemoveCompletedTodoListHandler).Methods("DELETE")
 
 	return a
 }
