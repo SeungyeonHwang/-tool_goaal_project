@@ -111,7 +111,7 @@ func (s *sqliteHandler) getProjectsList(query string, userId int) []*Project {
 func (s *sqliteHandler) GetProjectParticipants(id int) []*User {
 	users := []*User{}
 	query := `
-		SELECT user.id, user.email, user.picture
+		SELECT DISTINCT user.id, user.email, user.picture
         FROM user
         JOIN project_users ON user.id = project_users.userId
         WHERE project_users.projectId = ?`
@@ -255,6 +255,19 @@ func (s *sqliteHandler) UpdateProject(id int, name string, code string, descript
 	}
 
 	return &project
+}
+
+func (s *sqliteHandler) RemoveProject(id int) bool {
+	stmt, err := s.db.Prepare("DELETE FROM projects WHERE id=?")
+	if err != nil {
+		panic(err)
+	}
+	rs, err := stmt.Exec(id)
+	if err != nil {
+		panic(err)
+	}
+	cnt, _ := rs.RowsAffected()
+	return cnt > 0
 }
 
 func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {

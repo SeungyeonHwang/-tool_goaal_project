@@ -90,13 +90,13 @@
                 for (var i = 0; i < arguments.length; i++) {
                     var user = arguments[i][0];
                     items[i].user_picture = user.picture || "";
-                    var listItemHtml = createListItemHtml(items[i]);
-                    addItem(listItemHtml);
+                    addItem(items[i]);
                 }
             });
         });
 
-        var addItem = function (listItemHtml) {
+        var addItem = function (item) {
+            var listItemHtml = createListItemHtml(item);
             projectListItem.append(listItemHtml);
         };
 
@@ -123,11 +123,6 @@
                 searchProjects(searchValue);
             }
         });
-
-        const nameHeader = document.getElementById("sort-name");
-        const codeHeader = document.getElementById("sort-code");
-        const priorityHeader = document.getElementById("sort-priority");
-        const colorHeader = document.getElementById("sort-color");
 
         nameHeader.addEventListener("click", function () {
             toggleChevronClass(this);
@@ -193,7 +188,6 @@
                                 $("#color-options-modal .color-option").removeClass("active");
                                 $("#color-options-modal .color-option[data-color='" + color + "']").addClass('active');
                                 $("#project-description-text").val(project.description);
-
                                 if (!participantsLoaded) {
                                     var select = $('#project-manager');
                                     $.each(participantsList, function (_, participant) {
@@ -211,7 +205,6 @@
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
                                             if (availableUser.id != project.user_id) {
-                                                // TODO: 참가자에 있을 경우 넣지 않기
                                                 availableUsersList.push({ id: availableUser.id, email: availableUser.email });
                                                 availableUsersSelect.append($('<option>', {
                                                     value: availableUser.id,
@@ -249,9 +242,32 @@
                                     selectedOptions.remove();
                                 });
                             });
-                            //TODO : 수정 API
+                            $("#delete-project-link").on("click", function () {
+                                if (confirm("이 프로젝트를 삭제하시겠습니까?")) { // 삭제 메시지 출력
+                                    $.ajax({
+                                        url: `/projects/${itemId}`,
+                                        type: "DELETE", // DELETE 요청으로 변경
+                                        success: function () {
+                                            alert("프로젝트가 삭제되었습니다.");
+                                            // 삭제가 성공하면 페이지를 새로고침합니다.
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            alert("프로젝트 삭제에 실패했습니다.");
+                                        }
+                                    });
+                                }
+                            });
                             $("#edit-project-btn").on("click", function () {
-                                if (confirm("프로젝트 정보를 업데이트 하시겠습니까?")) { // 동의 메시지 출력
+                                const confirmPromise = new Promise((resolve, reject) => {
+                                    if (confirm("프로젝트 정보를 업데이트 하시겠습니까?")) {
+                                        resolve();
+                                    } else {
+                                        reject();
+                                    }
+                                });
+                                confirmPromise.then(() => {
+                                    // 사용자가 동의한 경우
                                     $.ajax({
                                         url: `/projects/${itemId}`,
                                         type: "PUT",
@@ -272,9 +288,11 @@
                                             alert("프로젝트 정보 업데이트에 실패했습니다.");
                                         }
                                     });
-                                }
+                                }).catch(() => {
+                                    // 사용자가 동의하지 않은 경우
+                                    console.log("사용자가 동의하지 않음");
+                                });
                             });
-
                             // 모달 숨김 버튼 클릭 시 이벤트 처리
                             $("#modal-close-btn").on("click", function () {
                                 $("#edit-project-form").hide();
@@ -338,51 +356,16 @@
                         });
                         $(".participant-list ul").html(participantList);
                     });
-
+                    $("#join-project-btn").on("click", function () {
+                        window.location.href = "/projects/" + itemId + "/todos";
+                    });
                     modal.modal("show");
-
                 })
                 .fail(function () {
                     // 요청 실패 시 실행할 코드
                     alert("프로젝트 정보를 가져오는데 실패했습니다.");
                     $("#project-detail-modal").modal("hide");
                 });
-            /////
-
-            //TODO : 가져오는거 성공했을 경우에만
-            console.log(sessionStorage)
-
-            // // 모달창에 수정 및 삭제 버튼에 클릭 이벤트 추가하기
-            // $("#project-edit-btn").off("click").on("click", function () {
-            //     // 수정 버튼 클릭 시 프로젝트 정보를 가지고 프로젝트 수정 모달창을 보여줌
-            //     $("#project-edit-modal #project-id").val(project.id);
-            //     $("#project-edit-modal #project-name").val(project.name);
-            //     $("#project-edit-modal #project-code").val(project.code);
-            //     $("#project-edit-modal #project-description").val(project.description);
-            //     $("#project-edit-modal .color-option").removeClass("active");
-            //     $("#project-edit-modal .color-option[data-color='" + project.color + "']").addClass("active");
-            //     $("#project-edit-modal #project-priority").val(project.priority);
-            //     $("#project-detail-modal").modal("hide");
-            //     $("#project-edit-modal").modal("show");
-            // });
-
-            // $("#project-delete-btn").off("click").on("click", function () {
-            // 삭제 버튼 클릭 시 프로젝트를 삭제함
-            //     if (confirm("Are you sure you want to delete this project?")) {
-            //         $.ajax({
-            //             url: `/projects/${project.id}`,
-            //             type: 'DELETE',
-            //             success: function () {
-            //                 // 삭제 성공 시 프로젝트 리스트를 업데이트함
-            //                 $.get('/projects', function (projects) {
-            //                     updateProjectList(projects);
-            //                 });
-            //             }
-            //         });
-            //         $("#project-detail-modal").modal("hide");
-            //     }
-            // });
-
         });
     });
 

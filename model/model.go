@@ -39,6 +39,7 @@ type DBHandler interface {
 	GetProjectById(id int) *Project
 	CheckProjectEditAuth(id int, sessionId string) bool
 	UpdateProject(id int, name string, code string, description string, color string, priority string, userId int, participantIds []string, availableUserIds []string) *Project
+	RemoveProject(id int) bool
 
 	//TODO
 	GetTodos(sessionId string, sort string) []*Todo

@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <h5 class="card-title mb-4">Create or Join a Project</h5>
                         <form>
-                            <div class="form-group mb-4" style="margin-top: 72px" ;>
+                            <div class="form-group mb-4" style="margin-top: 90px" ;>
                                 <label for="project-name">Project Name</label>
                                 <input type="text" class="form-control" id="project-name">
                             </div>
@@ -31,11 +31,18 @@
                                 <label for="project-code">Project Code</label>
                                 <input type="text" class="form-control" id="project-code">
                             </div>
+                            <div class="form-group">
+                                <label for="project-priority">Priority</label>
+                                <select class="form-control" id="project-priority">
+                                    <option value="high">上</option>
+                                    <option value="mid">中</option>
+                                    <option value="low" selected>下</option>
+                                </select>
+                            </div>
                             <div class="form-group mb-4">
                                 <label for="project-description">Project Description</label>
-                                <textarea class="form-control" id="project-description" rows="3"></textarea>
+                                <textarea class="form-control" id="project-description" rows="6"></textarea>
                             </div>
-                            <hr>
                             <div class="form-group mb-4">
                                 <label for="project-color">Project Color</label>
                                 <div id="color-options">
@@ -47,14 +54,7 @@
                                     <div class="color-option yellow" data-color="#f0f068"></div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="project-priority">Priority</label>
-                                <select class="form-control" id="project-priority">
-                                    <option value="high">上</option>
-                                    <option value="mid">中</option>
-                                    <option value="low" selected>下</option>
-                                </select>
-                            </div>
+                            <hr>
                             <button class="btn btn-primary" id="project-create-btn">Create Project</button>
                         </form>
                     </div>
@@ -83,7 +83,6 @@
                         <ul class="project-list">
                             <!-- item here -->
                         </ul>
-                        <button type="submit" class="btn btn-secondary" id="join-project-btn">Join Project</button>
                     </div>
                 </div>
             </div>
@@ -197,6 +196,7 @@
                                 </div>
                             </div>
                         </div>
+                        <a href="#" id="delete-project-link">프로젝트를 삭제하기</a>
                         <hr>
                         <button type="submit" class="btn btn-primary" id="edit-project-btn">更新</button>
                         <button type="button" class="btn btn-light" id="modal-close-btn">閉じる</button>

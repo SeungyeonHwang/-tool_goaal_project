@@ -16,6 +16,10 @@ type Handler struct {
 	db model.DBHandler
 }
 
+type Success struct {
+	Success bool `json:"success"`
+}
+
 func NewHandler(db model.DBHandler) *Handler {
 	return &Handler{db}
 }
@@ -101,4 +105,20 @@ func (h *Handler) UpdateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	project := h.db.UpdateProject(id, name, code, description, color, priority, userId, participantIds, availableUserIds)
 
 	rd.JSON(w, http.StatusOK, project)
+}
+
+func (h *Handler) RemoveProjectHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	ok := h.db.RemoveProject(id)
+	if ok {
+		rd.JSON(w, http.StatusOK, Success{true})
+	} else {
+		rd.JSON(w, http.StatusOK, Success{false})
+	}
+}
+
+func (h *Handler) GoToTodoHandler(w http.ResponseWriter, r *http.Request) {
+	todoURL := "/todo/todo.html"
+	http.Redirect(w, r, todoURL, http.StatusSeeOther)
 }
