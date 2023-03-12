@@ -2,6 +2,10 @@ body {
     background-color: #f9f9fa
 }
 
+.row {
+    margin-right: 0;
+}
+
 .flex {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 auto;
@@ -21,7 +25,7 @@ body {
 }
 
 .padding {
-    padding: 5rem
+    padding: 3rem
 }
 
 .card {
@@ -538,4 +542,9 @@ input[type="checkbox"] {
 
 .down-arrow {
     color: #007bff;
+}
+
+.todo-list-wrapper {
+    max-height: 500px;
+    overflow-y: scroll;
 }

@@ -1,6 +1,7 @@
 package project
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -119,6 +120,9 @@ func (h *Handler) RemoveProjectHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GoToTodoHandler(w http.ResponseWriter, r *http.Request) {
-	todoURL := "/todo/todo.html"
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+
+	todoURL := fmt.Sprintf("/todo/todo.html?project-id=%d", id)
 	http.Redirect(w, r, todoURL, http.StatusSeeOther)
 }

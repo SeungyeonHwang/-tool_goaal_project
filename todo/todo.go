@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -24,8 +25,8 @@ type Success struct {
 	Success bool `json:"success"`
 }
 
-func (t *Handler) GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
-	sessionId := login.GetSessionId(r)
+func (h *Handler) GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
+	projectId := r.FormValue("projectId")
 	sort := r.FormValue("sort")
 	filter := r.FormValue("filter")
 	var list = make([]*model.Todo, 0)
@@ -33,36 +34,38 @@ func (t *Handler) GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	if sort != "" && filter != "" {
 		switch filter {
 		case "user":
-			list = t.db.GetTodosSortedByUser(sessionId, sort)
+			list = h.db.GetTodosSortedByUser(projectId, sort)
 		case "completed":
-			list = t.db.GetTodosSortedByCompleted(sessionId, sort)
+			list = h.db.GetTodosSortedByCompleted(projectId, sort)
 		default:
-			list = t.db.GetTodos(sessionId, sort)
+			list = h.db.GetTodos(projectId, sort)
 		}
 	} else {
 		switch r.URL.Path {
 		case "/todos/sorted-by-user":
-			list = t.db.GetTodosSortedByUser(sessionId, "")
+			list = h.db.GetTodosSortedByUser(projectId, "")
 		case "/todos/sorted-by-completed":
-			list = t.db.GetTodosSortedByCompleted(sessionId, "")
+			list = h.db.GetTodosSortedByCompleted(projectId, "")
 		default:
-			list = t.db.GetTodos(sessionId, "")
+			list = h.db.GetTodos(projectId, "")
 		}
 	}
 	rd.JSON(w, http.StatusOK, list)
 }
 
-func (t *Handler) AddTodoListHandler(w http.ResponseWriter, r *http.Request) {
-	sessionId := login.GetSessionId(r)
+func (h *Handler) AddTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
-	todo := t.db.AddTodo(sessionId, name)
+	sessionId := login.GetSessionId(r)
+	userId := h.db.GetUserIdBySessionId(sessionId)
+	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
+	todo := h.db.AddTodo(name, userId, projectId)
 	rd.JSON(w, http.StatusCreated, todo)
 }
 
-func (t *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	ok := t.db.RemoveTodo(id)
+	ok := h.db.RemoveTodo(id)
 	if ok {
 		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
@@ -70,8 +73,8 @@ func (t *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-// func (t *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
-// 	ok := t.db.RemoveCompletedTodo()
+// func (h *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
+// 	ok := h.db.RemoveCompletedTodo()
 // 	if ok {
 // 		rd.JSON(w, http.StatusOK, Success{true})
 // 	} else {
@@ -79,11 +82,11 @@ func (t *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) 
 // 	}
 // }
 
-func (t *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	complete := r.FormValue("complete") == "true"
-	ok := t.db.CompleteTodo(id, complete)
+	ok := h.db.CompleteTodo(id, complete)
 	if ok {
 		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
@@ -91,8 +94,10 @@ func (t *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (t *Handler) GetTodoProgressHandler(w http.ResponseWriter, r *http.Request) {
-	sessionId := login.GetSessionId(r)
-	progress := t.db.GetProgress(sessionId)
+func (h *Handler) GetTodoProgressHandler(w http.ResponseWriter, r *http.Request) {
+	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
+	log.Println("check")
+	log.Println(projectId)
+	progress := h.db.GetProgress(projectId)
 	rd.JSON(w, http.StatusOK, progress)
 }

@@ -42,12 +42,12 @@ type DBHandler interface {
 	RemoveProject(id int) bool
 
 	//TODO
-	GetTodos(sessionId string, sort string) []*Todo
-	GetTodosSortedByUser(sessionId string, sort string) []*Todo
-	GetTodosSortedByCompleted(sessionId string, sort string) []*Todo
-	AddTodo(sessionId string, name string) *Todo
+	GetTodos(projectId string, sort string) []*Todo
+	GetTodosSortedByUser(projectId string, sort string) []*Todo
+	GetTodosSortedByCompleted(projectId string, sort string) []*Todo
+	AddTodo(name string, userId int, projectId int) *Todo
 	CompleteTodo(id int, complete bool) bool
-	GetProgress(sessionId string) int
+	GetProgress(projectId int) int
 
 	RemoveTodo(id int) bool
 	// RemoveCompletedTodo() bool

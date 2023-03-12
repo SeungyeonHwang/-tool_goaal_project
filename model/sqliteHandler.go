@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"log"
 	"math"
 	"time"
 
@@ -281,9 +282,9 @@ func (s *sqliteHandler) GetProjects(userId int, sort string) []*Project {
 	return s.getProjectsList(query, userId)
 }
 
-func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
+func (s *sqliteHandler) getTodosList(query string, projectId string) []*Todo {
 	todos := []*Todo{}
-	rows, err := s.db.Query(query, sessionId)
+	rows, err := s.db.Query(query, projectId)
 
 	if err != nil {
 		panic(err)
@@ -298,12 +299,13 @@ func (s *sqliteHandler) getTodosList(query string, sessionId string) []*Todo {
 	return todos
 }
 
-func (s *sqliteHandler) GetTodos(sessionId string, sort string) []*Todo {
+func (s *sqliteHandler) GetTodos(projectId string, sort string) []*Todo {
 	query := `
-        SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
-        FROM todos
-        JOIN user ON todos.sessionId = user.sessionId
-        WHERE todos.sessionId = ?`
+		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
+		FROM project_todos
+		JOIN todos ON project_todos.todoId = todos.id
+		JOIN user ON todos.userId = user.id
+		WHERE project_todos.projectId = ?`
 
 	switch sort {
 	case "asc":
@@ -311,26 +313,28 @@ func (s *sqliteHandler) GetTodos(sessionId string, sort string) []*Todo {
 	case "desc":
 		query += " ORDER BY todos.createdAt DESC"
 	}
-	return s.getTodosList(query, sessionId)
+	return s.getTodosList(query, projectId)
 }
 
-// TODO
-func (s *sqliteHandler) GetTodosSortedByUser(sessionId string, sort string) []*Todo {
+// TODO:
+func (s *sqliteHandler) GetTodosSortedByUser(projectId string, sort string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
-		FROM todos
-		JOIN user ON todos.sessionId = user.sessionId
-		WHERE todos.sessionId = ?`
+		FROM project_todos
+		JOIN todos ON project_todos.todoId = todos.id
+		JOIN user ON todos.userId = user.id
+		WHERE project_todos.projectId = ?`
 
-	return s.getTodosList(query, sessionId)
+	return s.getTodosList(query, projectId)
 }
 
-func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string, sort string) []*Todo {
+func (s *sqliteHandler) GetTodosSortedByCompleted(projectId string, sort string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
-		FROM todos
-		JOIN user ON todos.sessionId = user.sessionId
-		WHERE todos.sessionId = ? AND todos.completed = 0`
+		FROM project_todos
+		JOIN todos ON project_todos.todoId = todos.id
+		JOIN user ON todos.userId = user.id
+		WHERE project_todos.projectId = ? AND todos.completed = 0`
 
 	switch sort {
 	case "asc":
@@ -338,11 +342,11 @@ func (s *sqliteHandler) GetTodosSortedByCompleted(sessionId string, sort string)
 	case "desc":
 		query += " ORDER BY todos.createdAt DESC"
 	}
-	return s.getTodosList(query, sessionId)
+	return s.getTodosList(query, projectId)
 }
 
-func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
-	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, ?)")
+func (s *sqliteHandler) AddTodo(name string, userId int, projectId int) *Todo {
+	stmt, err := s.db.Prepare("INSERT INTO todos (userId, name, completed, createdAt) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		panic(err)
 	}
@@ -353,7 +357,7 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 		panic(err)
 	}
 
-	rs, err := stmt.Exec(sessionId, name, false, formattedTime)
+	rs, err := stmt.Exec(userId, name, false, formattedTime)
 	if err != nil {
 		panic(err)
 	}
@@ -362,7 +366,7 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 	todo.Id = int(id)
 	todo.Name = name
 
-	row := s.db.QueryRow("SELECT picture FROM user WHERE sessionId = ?", sessionId)
+	row := s.db.QueryRow("SELECT picture FROM user WHERE id = ?", userId)
 	err = row.Scan(&todo.Picture)
 	if err != nil {
 		panic(err)
@@ -370,7 +374,21 @@ func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
 
 	todo.Completed = false
 	todo.CreatedAt = formattedTime
+
+	s.addTodoToProject(projectId, todo.Id)
 	return &todo
+}
+
+func (s *sqliteHandler) addTodoToProject(projectId int, todoId int) {
+	stmt, err := s.db.Prepare("INSERT INTO project_todos (projectId, todoId) VALUES (?, ?)")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = stmt.Exec(projectId, todoId)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (s *sqliteHandler) CompleteTodo(id int, complete bool) bool {
@@ -413,13 +431,16 @@ func (s *sqliteHandler) RemoveTodo(id int) bool {
 // 	return cnt > 0
 // }
 
-func (s *sqliteHandler) GetProgress(sessionId string) int {
+func (s *sqliteHandler) GetProgress(projectId int) int {
+	log.Println(projectId)
 	rows, err := s.db.Query(`
 		SELECT 
 		COUNT(*) AS total_count, 
 		COUNT(CASE WHEN completed = 1 THEN 1 ELSE NULL END) AS completed_count 
 		FROM todos 
-		WHERE sessionId = ?`, sessionId)
+		WHERE id IN (
+			SELECT todoId FROM project_todos WHERE projectId=?
+		)`, projectId)
 	if err != nil {
 		panic(err)
 	}
@@ -485,13 +506,15 @@ func newSqliteHandler(dbDir string) DBHandler {
 		);`)
 	statement.Exec()
 
-	// CREATE TABLE IF NOT EXISTS project_todos (
-	// 	id          INTEGER  PRIMARY KEY AUTOINCREMENT,
-	// 	project_id  INTEGER,
-	// 	todo_id     INTEGER,
-	// 	FOREIGN KEY (project_id) REFERENCES projects(id),
-	// 	FOREIGN KEY (todo_id) REFERENCES todos(id)
-	// );
+	statement, _ = database.Prepare(
+		`CREATE TABLE IF NOT EXISTS project_todos (
+			id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+			projectId   INTEGER,
+			todoId      INTEGER,
+			FOREIGN KEY (projectId) REFERENCES projects(id),
+			FOREIGN KEY (todoId) REFERENCES todos(id)
+		)`)
+	statement.Exec()
 
 	statement, _ = database.Prepare(
 		`CREATE TABLE IF NOT EXISTS user (
@@ -509,13 +532,13 @@ func newSqliteHandler(dbDir string) DBHandler {
 	statement, _ = database.Prepare(
 		`CREATE TABLE IF NOT EXISTS todos (
 			id        INTEGER  PRIMARY KEY AUTOINCREMENT,
-			sessionId STRING,
+			userId    INTEGER,
 			name      TEXT,
 			completed BOOLEAN,
 			createdAt STRING
 		);
-		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
-			sessionId ASC
+		CREATE INDEX IF NOT EXISTS userIdIndexOnTodos ON todos (
+			userId ASC
 		)`)
 	statement.Exec()
 

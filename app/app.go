@@ -44,11 +44,9 @@ func MakeHandler(dbDir string) *AppHandler {
 	}
 
 	//USER
-	r.HandleFunc("/user/{id:[0-9]+}", a.user.GetUserInfoById).Methods("GET")
-
-	//LOGIN
 	r.HandleFunc("/auth/google/login", login.GoogleLoginHandler)
 	r.HandleFunc("/auth/google/callback", login.GoogleAuthCallback)
+	r.HandleFunc("/user/{id:[0-9]+}", a.user.GetUserInfoById).Methods("GET")
 
 	//PROJECT
 	r.HandleFunc("/", a.project.IndexHandler)
@@ -58,21 +56,18 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/projects/{id:[0-9]+}/check-edit-auth", a.project.CheckProjectEditAuthHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}/participants", a.project.GetProjectParticipantListHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}/availableUsers", a.project.GetProjectAvailableUsersListHandler).Methods("GET")
+	r.HandleFunc("/projects/{id:[0-9]+}/todos", a.project.GoToTodoHandler).Methods("GET")
 	r.HandleFunc("/projects/{id:[0-9]+}", a.project.UpdateProjectHandler).Methods("PUT")
 	r.HandleFunc("/projects/{id:[0-9]+}", a.project.RemoveProjectHandler).Methods("DELETE")
-	r.HandleFunc("/projects/{id:[0-9]+}/todos", a.project.GoToTodoHandler).Methods("GET")
 
 	//TODO
 	r.HandleFunc("/todos", a.todo.GetTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-user", a.todo.GetTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted-by-completed", a.todo.GetTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/sorted", a.todo.GetTodoListHandler).Methods("GET")
-
-	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.todo.CompleteTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos/progress", a.todo.GetTodoProgressHandler).Methods("GET")
-
+	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.todo.CompleteTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos", a.todo.AddTodoListHandler).Methods("POST")
-
 	r.HandleFunc("/todos/{id:[0-9]+}", a.todo.RemoveTodoListHandler).Methods("DELETE")
 	// r.HandleFunc("/todos-completed-clear", a.todo.RemoveCompletedTodoListHandler).Methods("DELETE")
 

@@ -1,5 +1,7 @@
 (function ($) {
     'use strict';
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get("project-id");
 
     $(function () {
         var filter = 'all';
@@ -12,7 +14,7 @@
             var item = $(this).prevAll('.todo-list-input').val();
 
             if (item) {
-                $.post("/todos", { name: item }, addItem)
+                $.post("/todos", { name: item, projectId: projectId }, addItem)
                 todoListInput.val("");
             }
         });
@@ -21,11 +23,11 @@
             var completedClass = item.completed ? "completed" : "";
             var picture = item.picture ? item.picture : "";
             var createdAt = new Date(item.created_at);
-            createdAt = createdAt.getFullYear() + '年' +
-                ('0' + (createdAt.getMonth() + 1)).slice(-2) + '月' +
+            createdAt = createdAt.getFullYear() + '-' +
+                ('0' + (createdAt.getMonth() + 1)).slice(-2) + '-' +
                 ('0' + createdAt.getDate()).slice(-2) + ' ' +
-                ('0' + createdAt.getHours()).slice(-2) + '時' +
-                ('0' + createdAt.getMinutes()).slice(-2)+ '分';
+                ('0' + createdAt.getHours()).slice(-2) + ':' +
+                ('0' + createdAt.getMinutes()).slice(-2);
             var listItemHtml =
                 "<li class='" +
                 completedClass +
@@ -52,7 +54,7 @@
         };
 
 
-        $.get('/todos', function (items) {
+        $.get('/todos?projectId=' + projectId, function (items) {
             items.forEach(e => {
                 addItem(e)
             });
@@ -178,7 +180,7 @@
         }
 
         function updateProgressBar() {
-            $.get('/todos/progress', function (progress) {
+            $.get('/todos/progress?projectId=' + projectId, function (progress) {
                 $('.progress-bar').css('width', progress + '%');
                 $('.progress-bar').text(progress + '%');
             });
