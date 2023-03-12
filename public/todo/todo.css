@@ -548,3 +548,24 @@ input[type="checkbox"] {
     max-height: 500px;
     overflow-y: scroll;
 }
+
+.completed-clear-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.completed-clear-btn:hover {
+    color: #fff;
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.completed-clear-btn:focus {
+    color: #fff;
+    background-color: #c82333;
+    border-color: #bd2130;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}

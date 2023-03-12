@@ -8,6 +8,13 @@
         var todoListItem = $('.todo-list');
         var todoListInput = $('.todo-list-input');
 
+        $('.todo-list-input').on("keydown", function (event) {
+            if (event.keyCode === 13) { // Enter key
+                event.preventDefault();
+                $('.todo-list-add-btn').trigger("click");
+            }
+        });
+
         $('.todo-list-add-btn').on("click", function (event) {
             event.preventDefault();
 
@@ -80,16 +87,18 @@
         todoListItem.on('click', '.remove', function () {
             var id = $(this).closest("li").attr('id');
             var $self = $(this);
-            $.ajax({
-                url: "/todos/" + id,
-                type: "DELETE",
-                success: function (data) {
-                    if (data.success) {
-                        $self.parent().remove();
-                        updateProgressBar();
+            if (confirm("Are you sure you want to delete this todo?")) {
+                $.ajax({
+                    url: "/todos/" + id,
+                    type: "DELETE",
+                    success: function (data) {
+                        if (data.success) {
+                            $self.parent().remove();
+                            updateProgressBar();
+                        }
                     }
-                }
-            })
+                });
+            }
         });
 
         $('.completed-clear-btn').click(function () {
