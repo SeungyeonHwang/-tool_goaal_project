@@ -114,11 +114,9 @@
 
         $('#search-project').keyup(function () {
             var searchValue = $(this).val().toLowerCase();
+            console.log(searchValue)
             if (searchValue === '') {
                 $('.project-item').show();
-                originalItems.forEach(e => {
-                    addItem(e);
-                });
             } else {
                 searchProjects(searchValue);
             }
