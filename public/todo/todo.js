@@ -49,10 +49,8 @@
                 "<i class='remove mdi mdi-close-circle-outline'></i>" +
                 "</li>";
             todoListItem.append(listItemHtml);
-
             updateProgressBar();
         };
-
 
         $.get('/todos?projectId=' + projectId, function (items) {
             items.forEach(e => {
@@ -94,6 +92,19 @@
             })
         });
 
+        $('.completed-clear-btn').click(function () {
+            $.ajax({
+                url: "/todos/completed?projectId=" + projectId,
+                type: "DELETE",
+                success: function (data) {
+                    if (data.success) {
+                        updateProgressBar(); // 페이지 다시 로드하기 전에 실행됨
+                        location.reload(); // 페이지 다시 로드
+                    }
+                }
+            });
+        });
+
         $('.filter-btn').click(function () {
             $(this).addClass('active').siblings().removeClass('active');
 
@@ -107,20 +118,6 @@
             }
         });
 
-        $('.completed-clear-btn').click(function () {
-            $.ajax({
-                url: "/todos-completed-clear",
-                type: "DELETE",
-                success: function (data) {
-                    if (data.success) {
-                        $self.parent().remove();
-                        updateProgressBar();
-                        location.reload();
-                    }
-                }
-            })
-        });
-
         const upArrowBtn = document.querySelector('.up-arrow');
         const downArrowBtn = document.querySelector('.down-arrow');
 
@@ -128,7 +125,7 @@
             upArrowBtn.style.display = 'none';
             downArrowBtn.style.display = 'block';
             var sort = 'desc';
-            $.get('/todos/sorted', { filter: filter, sort: sort }, function (items) {
+            $.get('/todos/sorted', { filter: filter, sort: sort, projectId: projectId }, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)
@@ -140,7 +137,7 @@
             downArrowBtn.style.display = 'none';
             upArrowBtn.style.display = 'block';
             var sort = 'asc';
-            $.get('/todos/sorted', { filter: filter, sort: sort }, function (items) {
+            $.get('/todos/sorted', { filter: filter, sort: sort, projectId: projectId }, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)
@@ -149,7 +146,7 @@
         });
 
         function sortByUser() {
-            $.get('/todos/sorted-by-user', function (items) {
+            $.get('/todos/sorted-by-user?projectId=' + projectId, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)
@@ -158,7 +155,7 @@
         }
 
         function sortByCompleted() {
-            $.get('/todos/sorted-by-completed', function (items) {
+            $.get('/todos/sorted-by-completed?projectId=' + projectId, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)
@@ -167,7 +164,7 @@
         }
 
         function showAll() {
-            $.get('/todos', function (items) {
+            $.get('/todos?projectId=' + projectId, function (items) {
                 clearList();
                 items.forEach(e => {
                     addItem(e)

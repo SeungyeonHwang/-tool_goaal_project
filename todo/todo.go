@@ -1,7 +1,6 @@
 package todo
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -73,14 +72,15 @@ func (h *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-// func (h *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
-// 	ok := h.db.RemoveCompletedTodo()
-// 	if ok {
-// 		rd.JSON(w, http.StatusOK, Success{true})
-// 	} else {
-// 		rd.JSON(w, http.StatusOK, Success{false})
-// 	}
-// }
+func (h *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
+	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
+	ok := h.db.RemoveCompletedTodo(projectId)
+	if ok {
+		rd.JSON(w, http.StatusOK, Success{true})
+	} else {
+		rd.JSON(w, http.StatusOK, Success{false})
+	}
+}
 
 func (h *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -96,8 +96,6 @@ func (h *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request
 
 func (h *Handler) GetTodoProgressHandler(w http.ResponseWriter, r *http.Request) {
 	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
-	log.Println("check")
-	log.Println(projectId)
 	progress := h.db.GetProgress(projectId)
 	rd.JSON(w, http.StatusOK, progress)
 }

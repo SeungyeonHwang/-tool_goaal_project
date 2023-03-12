@@ -48,9 +48,8 @@ type DBHandler interface {
 	AddTodo(name string, userId int, projectId int) *Todo
 	CompleteTodo(id int, complete bool) bool
 	GetProgress(projectId int) int
-
 	RemoveTodo(id int) bool
-	// RemoveCompletedTodo() bool
+	RemoveCompletedTodo(projectId int) bool
 
 	Close()
 }

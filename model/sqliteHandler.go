@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"log"
 	"math"
 	"time"
 
@@ -316,15 +315,21 @@ func (s *sqliteHandler) GetTodos(projectId string, sort string) []*Todo {
 	return s.getTodosList(query, projectId)
 }
 
-// TODO:
 func (s *sqliteHandler) GetTodosSortedByUser(projectId string, sort string) []*Todo {
 	query := `
 		SELECT todos.id, todos.name, user.picture, todos.completed, todos.createdAt
 		FROM project_todos
 		JOIN todos ON project_todos.todoId = todos.id
 		JOIN user ON todos.userId = user.id
-		WHERE project_todos.projectId = ?`
+		WHERE project_todos.projectId = ?
+		ORDER BY user.id`
 
+	switch sort {
+	case "asc":
+		query += ", todos.createdAt ASC"
+	case "desc":
+		query += ", todos.createdAt DESC"
+	}
 	return s.getTodosList(query, projectId)
 }
 
@@ -417,22 +422,24 @@ func (s *sqliteHandler) RemoveTodo(id int) bool {
 	return cnt > 0
 }
 
-// TODO : Team todo delete
-// func (s *sqliteHandler) RemoveCompletedTodo(id int) bool {
-// 	stmt, err := s.db.Prepare("DELETE FROM todos WHERE id=?")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	rs, err := stmt.Exec(id)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	cnt, _ := rs.RowsAffected()
-// 	return cnt > 0
-// }
+func (s *sqliteHandler) RemoveCompletedTodo(projectId int) bool {
+	stmt, err := s.db.Prepare(`
+        DELETE FROM todos WHERE id IN (
+            SELECT todoId FROM project_todos WHERE projectId = ?
+        ) AND completed = 1
+    `)
+	if err != nil {
+		panic(err)
+	}
+	rs, err := stmt.Exec(projectId)
+	if err != nil {
+		panic(err)
+	}
+	cnt, _ := rs.RowsAffected()
+	return cnt > 0
+}
 
 func (s *sqliteHandler) GetProgress(projectId int) int {
-	log.Println(projectId)
 	rows, err := s.db.Query(`
 		SELECT 
 		COUNT(*) AS total_count, 

@@ -122,7 +122,6 @@
 
         $('#search-project').keyup(function () {
             var searchValue = $(this).val().toLowerCase();
-            console.log(searchValue)
             if (searchValue === '') {
                 $('.project-item').show();
             } else {

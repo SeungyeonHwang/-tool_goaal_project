@@ -69,7 +69,7 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/complete-todo/{id:[0-9]+}", a.todo.CompleteTodoListHandler).Methods("GET")
 	r.HandleFunc("/todos", a.todo.AddTodoListHandler).Methods("POST")
 	r.HandleFunc("/todos/{id:[0-9]+}", a.todo.RemoveTodoListHandler).Methods("DELETE")
-	// r.HandleFunc("/todos-completed-clear", a.todo.RemoveCompletedTodoListHandler).Methods("DELETE")
+	r.HandleFunc("/todos/completed", a.todo.RemoveCompletedTodoListHandler).Methods("DELETE")
 
 	return a
 }
