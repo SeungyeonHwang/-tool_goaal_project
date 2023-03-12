@@ -26,17 +26,8 @@ func (a *AppHandler) Close() {
 
 func MakeHandler(dbDir string) *AppHandler {
 	r := mux.NewRouter()
-	n := negroni.New(
-		negroni.NewRecovery(),
-		negroni.NewLogger(),
-		negroni.HandlerFunc(login.CheckLogin),
-		negroni.NewStatic(http.Dir("public")),
-	)
-
-	n.UseHandler(r)
 
 	a := &AppHandler{
-		Handler: n,
 		db:      model.NewDBHandler(dbDir),
 		project: project.NewHandler(model.NewDBHandler(dbDir)),
 		todo:    todo.NewHandler(model.NewDBHandler(dbDir)),
@@ -70,6 +61,22 @@ func MakeHandler(dbDir string) *AppHandler {
 	r.HandleFunc("/todos", a.todo.AddTodoListHandler).Methods("POST")
 	r.HandleFunc("/todos/{id:[0-9]+}", a.todo.RemoveTodoListHandler).Methods("DELETE")
 	r.HandleFunc("/todos/completed", a.todo.RemoveCompletedTodoListHandler).Methods("DELETE")
+
+	n := negroni.New(
+		negroni.NewRecovery(),
+		negroni.NewLogger(),
+		negroni.HandlerFunc(login.CheckLogin),
+		negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+			if !user.CheckAccessPermission(a.db, w, r) {
+				return
+			}
+			next(w, r)
+		}),
+		negroni.NewStatic(http.Dir("public")),
+	)
+
+	n.UseHandler(r)
+	a.Handler = n
 
 	return a
 }
