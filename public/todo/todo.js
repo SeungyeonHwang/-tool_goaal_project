@@ -93,16 +93,18 @@
         });
 
         $('.completed-clear-btn').click(function () {
-            $.ajax({
-                url: "/todos/completed?projectId=" + projectId,
-                type: "DELETE",
-                success: function (data) {
-                    if (data.success) {
-                        updateProgressBar(); // 페이지 다시 로드하기 전에 실행됨
-                        location.reload(); // 페이지 다시 로드
+            if (confirm("Are you sure you want to delete all completed todos?")) {
+                $.ajax({
+                    url: "/todos/completed?projectId=" + projectId,
+                    type: "DELETE",
+                    success: function (data) {
+                        if (data.success) {
+                            updateProgressBar();
+                            location.reload();
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
         $('.filter-btn').click(function () {
