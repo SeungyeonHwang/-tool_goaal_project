@@ -86,14 +86,22 @@
             items.forEach(function (item) {
                 users.push($.get("/user/" + item.user_id));
             });
-            $.when.apply(null, users).done(function () {
-                for (var i = 0; i < arguments.length; i++) {
-                    var user = arguments[i][0];
-                    items[i].user_picture = user.picture || "";
-                    addItem(items[i]);
-                }
-            });
+            if (items.length === 1) {
+                $.when.apply(null, users).done(function (user) {
+                    items[0].user_picture = user.picture || "";
+                    addItem(items[0]);
+                });
+            } else {
+                $.when.apply(null, users).done(function () {
+                    for (var i = 0; i < arguments.length; i++) {
+                        var user = arguments[i][0];
+                        items[i].user_picture = user.picture || "";
+                        addItem(items[i]);
+                    }
+                });
+            }
         });
+        
 
         var addItem = function (item) {
             var listItemHtml = createListItemHtml(item);
