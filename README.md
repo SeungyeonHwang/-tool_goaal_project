@@ -1,9 +1,9 @@
 [Domain] 
    - https://salty-hamlet-77528.herokuapp.com/
-[기능]
-   - 
+   - hwang.sy.test.1@gmail.com
+   - hwang.sy.test.2@gmail.com
+   - hwang.sy.test.3@gmail.com
 ==========================================================================================================
-[테스트 코드 기존꺼 돌아가게 하기]
 [일본어 작업 / 주석달기] -> doc
 [Readme 작성]
 [배포]
