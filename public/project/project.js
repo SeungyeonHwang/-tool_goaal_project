@@ -31,9 +31,11 @@
             var priority = projectPriority.val();
 
             if (!name || !code) {
-                alert("Please fill in project name and code.");
+                alert("プロジェクト名とコードを入力してください。");
                 return;
             }
+
+            // 新しいプロジェクトを作成するためのjQuery関数
             $.post('/projects', {
                 name: name,
                 code: code,
@@ -50,9 +52,10 @@
             cache: true
         });
 
+        // プロジェクトのリストを取得し、各プロジェクトのユーザー情報を取得してリストアイテムを生成するためのjQuery関数
         var createListItemHtml = function (item) {
             var color = item.color || "#A9A9A9";
-            var priorityText = ""; // 우선순위에 따른 한자 표시를 위한 문자열 변수
+            var priorityText = "";
             var listColor = "";
             switch (item.priority) {
                 case "high":
@@ -101,7 +104,6 @@
                 });
             }
         });
-        
 
         var addItem = function (item) {
             var listItemHtml = createListItemHtml(item);
@@ -149,6 +151,7 @@
             sortItems(originalItems, 'color');
         });
 
+        // 配列のオブジェクトを指定したキーでソートするためのjQuery関数
         function sortItems(items, sortBy) {
             items.sort(function (a, b) {
                 var aValue = a[sortBy].toLowerCase();
@@ -166,13 +169,12 @@
             sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
         }
 
-        // 프로젝트 상세 모달 출력
         $(".project-list").on("click", "li.project-item", function () {
             var itemId = $(this).data("id");
             $("#edit-project-form").hide();
             $("#show-edit-project-btn").hide();
 
-            // AJAX 요청
+            // 特定のプロジェクトの情報を取得するためのjQuery関数
             $.get(`/projects/${itemId}`)
                 .done(function (project) {
                     var modal = $("#project-detail-modal");
@@ -180,11 +182,10 @@
                     var participantsList = [];
                     var availableUsersList = [];
 
-                    // Edit 버튼 표시 여부 설정
+                    // プロジェクトを編集できるかどうかを確認するためのjQuery関数
                     $.get(`/projects/${itemId}/check-edit-auth`, function (response) {
                         if (response) {
                             $("#show-edit-project-btn").show().on("click", function () {
-                                // 각 폼 필드에 해당하는 프로젝트 상세 정보 적용하기
                                 $("#edit-project-form").show();
                                 $("#project-name-modal").val(project.name);
                                 $("#project-code-modal").val(project.code);
@@ -207,6 +208,8 @@
                                 var availableUsersSelect = $('#available-users');
                                 var selectedUsersSelect = $('#selected-users');
                                 if (!availableUsersLoaded) {
+                                    
+                                    // プロジェクトの利用可能なユーザーを取得し、フォーム内のユーザー選択リストを更新するためのjQuery関数
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
                                             if (availableUser.id != project.user_id) {
@@ -230,49 +233,48 @@
                                             console.error(`Failed to load available users: ${errorThrown}`);
                                         })
                                         .always(function () {
-                                            // $.get() 함수가 완료되면 플래그 변수를 true로 설정합니다.
                                             availableUsersLoaded = true;
                                         });
                                 }
-                                // add-user-btn 버튼 클릭 이벤트 처리
                                 $('#add-user-btn').click(function () {
                                     var selectedOptions = availableUsersSelect.find(':selected');
                                     selectedOptions.clone().appendTo(selectedUsersSelect);
                                     selectedOptions.remove();
                                 });
-                                // remove-user-btn 버튼 클릭 이벤트 처리
                                 $('#remove-user-btn').click(function () {
                                     var selectedOptions = selectedUsersSelect.find(':selected');
                                     selectedOptions.clone().appendTo(availableUsersSelect);
                                     selectedOptions.remove();
                                 });
                             });
+
+                            // プロジェクトを削除するためのjQuery関数
                             $("#delete-project-link").on("click", function () {
-                                if (confirm("이 프로젝트를 삭제하시겠습니까?")) { // 삭제 메시지 출력
+                                if (confirm("このプロジェクトを削除しますか？")) {
                                     $.ajax({
                                         url: `/projects/${itemId}`,
-                                        type: "DELETE", // DELETE 요청으로 변경
+                                        type: "DELETE",
                                         success: function () {
-                                            alert("프로젝트가 삭제되었습니다.");
-                                            // 삭제가 성공하면 페이지를 새로고침합니다.
+                                            alert("プロジェクトが削除されました。");
                                             location.reload();
                                         },
                                         error: function () {
-                                            alert("프로젝트 삭제에 실패했습니다.");
+                                            alert("プロジェクトの削除に失敗しました。");
                                         }
                                     });
                                 }
                             });
+                            
+                            // プロジェクト情報を更新するためのjQuery関数
                             $("#edit-project-btn").on("click", function () {
                                 const confirmPromise = new Promise((resolve, reject) => {
-                                    if (confirm("프로젝트 정보를 업데이트 하시겠습니까?")) {
+                                    if (confirm("プロジェクト情報を更新しますか？")) {
                                         resolve();
                                     } else {
                                         reject();
                                     }
                                 });
                                 confirmPromise.then(() => {
-                                    // 사용자가 동의한 경우
                                     $.ajax({
                                         url: `/projects/${itemId}`,
                                         type: "PUT",
@@ -287,18 +289,15 @@
                                             availableUserIds: $("#available-users option").map(function () { return $(this).val(); }).get()
                                         },
                                         success: function () {
-                                            alert("프로젝트 정보가 업데이트되었습니다.");
+                                            alert("プロジェクトが更新されました。");
                                         },
                                         error: function () {
-                                            alert("프로젝트 정보 업데이트에 실패했습니다.");
+                                            alert("プロジェクトの更新に失敗しました。");
                                         }
                                     });
                                 }).catch(() => {
-                                    // 사용자가 동의하지 않은 경우
-                                    console.log("사용자가 동의하지 않음");
                                 });
                             });
-                            // 모달 숨김 버튼 클릭 시 이벤트 처리
                             $("#modal-close-btn").on("click", function () {
                                 $("#edit-project-form").hide();
                             });
@@ -306,8 +305,7 @@
                             $("#show-project-btn").hide();
                         }
                     }).fail(function () {
-                        // 요청 실패 시 실행할 코드
-                        alert("프로젝트 수정 권한 체크에 실패했습니다.");
+                        alert("プロジェクトの編集権限チェックに失敗しました。");
                         $("#edit-project-btn").hide();
                     });
 
@@ -332,6 +330,7 @@
                     }
                     modal.find("#project-priority").text(priorityText)
 
+                    // プロジェクトのユーザー情報を取得し、モーダルで表示するためのjQuery関数
                     $.get("/user/" + project.user_id, function (user) {
                         modal.find("#project-userId").text(user.email);
                         if (user.picture) {
@@ -343,8 +342,8 @@
 
                     modal.find("#project-description").html(project.description.replace(/\n/g, "<br>"));
                     modal.find("#project-createdAt").text(project.created_at);
-
-                    // 참여자 목록 출력
+                    
+                    // プロジェクトの参加者情報を取得し、モーダルで表示するためのjQuery関数
                     $.get(`/projects/${itemId}/participants`, function (participants) {
                         var participantList = ""
                         participants.forEach(function (participant) {
@@ -367,13 +366,13 @@
                     modal.modal("show");
                 })
                 .fail(function () {
-                    // 요청 실패 시 실행할 코드
-                    alert("프로젝트 정보를 가져오는데 실패했습니다.");
+                    alert("プロジェクト情報の取得に失敗しました。");
                     $("#project-detail-modal").modal("hide");
                 });
         });
     });
 
+    // プロジェクトアイテムを取得し、検索語が含まれている場合は表示し、含まれていない場合は非表示にするjQuery関数
     function searchProjects(searchValue) {
         $('.project-item').each(function () {
             var itemName = $(this).find('.project-name').text().toLowerCase();
@@ -386,6 +385,7 @@
         });
     }
 
+    // 要素の子要素のFontAwesomeアイコン要素をトグルするjQuery関数
     function toggleChevronClass(element) {
         const up = "fa-chevron-up";
         const down = "fa-chevron-down";

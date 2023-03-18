@@ -15,6 +15,7 @@
             }
         });
 
+        // Todoリストに項目を追加するための関数
         $('.todo-list-add-btn').on("click", function (event) {
             event.preventDefault();
 
@@ -26,6 +27,7 @@
             }
         });
 
+        // Todoリストにアイテムを追加する処理を行うaddItem()関数
         var addItem = function (item) {
             var completedClass = item.completed ? "completed" : "";
             var picture = item.picture ? item.picture : "";
@@ -59,12 +61,14 @@
             updateProgressBar();
         };
 
+        // プロジェクトに紐づくTodoアイテムを取得し、それぞれのアイテムに対してaddItem()関数を呼び出して、Todoリストにアイテムを追加する処理
         $.get('/todos?projectId=' + projectId, function (items) {
             items.forEach(e => {
                 addItem(e)
             });
         });
 
+        // Todoリストのアイテムの完了を切り替えるためのjQuery関数
         todoListItem.on('change', '.checkbox', function () {
             var id = $(this).closest("li").attr('id')
             var $self = $(this);
@@ -84,10 +88,11 @@
             })
         });
 
+        // Todoリストのアイテムの削除を行うためのjQuery関数
         todoListItem.on('click', '.remove', function () {
             var id = $(this).closest("li").attr('id');
             var $self = $(this);
-            if (confirm("Are you sure you want to delete this todo?")) {
+            if (confirm("このタスクを削除してもよろしいですか？")) {
                 $.ajax({
                     url: "/todos/" + id,
                     type: "DELETE",
@@ -101,8 +106,9 @@
             }
         });
 
+        // 完了したTodoをすべて削除するためのjQuery関数
         $('.completed-clear-btn').click(function () {
-            if (confirm("Are you sure you want to delete all completed todos?")) {
+            if (confirm("完了したすべてのタスクを削除してもよろしいですか？")) {
                 $.ajax({
                     url: "/todos/completed?projectId=" + projectId,
                     type: "DELETE",
@@ -116,6 +122,7 @@
             }
         });
 
+        // TodoリストをフィルターするためのjQuery関数
         $('.filter-btn').click(function () {
             $(this).addClass('active').siblings().removeClass('active');
 
@@ -132,6 +139,7 @@
         const upArrowBtn = document.querySelector('.up-arrow');
         const downArrowBtn = document.querySelector('.down-arrow');
 
+        // Todoリストを昇順または降順にソートするためのJavaScript関数
         upArrowBtn.addEventListener('click', () => {
             upArrowBtn.style.display = 'none';
             downArrowBtn.style.display = 'block';
@@ -156,6 +164,7 @@
             });
         });
 
+        // TodoリストをソートするためのjQuery関数
         function sortByUser() {
             $.get('/todos/sorted-by-user?projectId=' + projectId, function (items) {
                 clearList();
@@ -187,6 +196,7 @@
             $('.todo-list').empty();
         }
 
+        // 進捗バーを更新するためのjQuery関数
         function updateProgressBar() {
             $.get('/todos/progress?projectId=' + projectId, function (progress) {
                 $('.progress-bar').css('width', progress + '%');

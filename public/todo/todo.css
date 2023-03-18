@@ -488,6 +488,11 @@ input[type="checkbox"] {
 }
 
 .filter-btn {
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
     background-color: transparent;
     border: none;
     padding: 5px 10px;
@@ -504,6 +509,7 @@ input[type="checkbox"] {
 } */
 
 .filter-btn.active {
+    border-radius: 20px;
     background-color: #007bff;
     color: #fff;
 }
@@ -550,20 +556,27 @@ input[type="checkbox"] {
 }
 
 .completed-clear-btn {
+    border-radius: 20px;
+    height: 35px;
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;
     background-color: #dc3545;
     border-color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .completed-clear-btn:hover {
+    border-radius: 20px;
     color: #fff;
     background-color: #c82333;
     border-color: #bd2130;
 }
 
 .completed-clear-btn:focus {
+    border-radius: 20px;
     color: #fff;
     background-color: #c82333;
     border-color: #bd2130;

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
     <link rel="stylesheet" href="project.css">
 
-    <title>Hello, world!</title>
+    <title>Goaal</title>
 </head>
 
 <body>
@@ -21,18 +21,18 @@
             <div class="col-md-6 p-0">
                 <div class="card mr-3">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Create or Join a Project</h5>
+                        <h5 class="card-title mb-4">プロジェクトを作成</h5>
                         <form>
                             <div class="form-group mb-4" style="margin-top: 90px" ;>
-                                <label for="project-name">Project Name</label>
+                                <label for="project-name">プロジェクト名</label>
                                 <input type="text" class="form-control" id="project-name">
                             </div>
                             <div class="form-group mb-4">
-                                <label for="project-code">Project Code</label>
+                                <label for="project-code">コード</label>
                                 <input type="text" class="form-control" id="project-code">
                             </div>
                             <div class="form-group">
-                                <label for="project-priority">Priority</label>
+                                <label for="project-priority">優先度</label>
                                 <select class="form-control" id="project-priority">
                                     <option value="high">上</option>
                                     <option value="mid">中</option>
@@ -40,11 +40,11 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="project-description">Project Description</label>
+                                <label for="project-description">内容</label>
                                 <textarea class="form-control" id="project-description" rows="6"></textarea>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="project-color">Project Color</label>
+                                <label for="project-color">色</label>
                                 <div id="color-options">
                                     <div class="color-option gray" data-color="#A9A9A9"></div>
                                     <div class="color-option blue" data-color="#0091ff"></div>
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <button class="btn btn-primary" id="project-create-btn">Create Project</button>
+                            <button class="btn btn-primary" id="project-create-btn">作成</button>
                         </form>
                     </div>
                 </div>
@@ -63,21 +63,21 @@
             <div class="col-md-6 p-0">
                 <div class="card ml-3">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Join a Project</h5>
+                        <h5 class="card-title mb-4">プロジェクトに参加</h5>
                         <div class="search-container">
                             <div class="search-icon">
                                 <i class="fa fa-search"></i>
                             </div>
-                            <input type="text" placeholder="Search projects..." id="search-project">
+                            <input type="text" placeholder="プロジェクトを検索..." id="search-project">
                         </div>
                         <div class="project-list-header d-flex">
-                            <div class="header-item" id="sort-name">Name <i class="fa fa-chevron-up"></i><i
+                            <div class="header-item" id="sort-name">プロジェクト名 <i class="fa fa-chevron-up"></i><i
                                     class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-code">Code <i class="fa fa-chevron-up"></i><i
+                            <div class="header-item" id="sort-code">コード <i class="fa fa-chevron-up"></i><i
                                     class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-priority">Priority <i class="fa fa-chevron-up"></i><i
+                            <div class="header-item" id="sort-priority">優先度 <i class="fa fa-chevron-up"></i><i
                                     class="fa fa-chevron-down"></i></div>
-                            <div class="header-item" id="sort-color">Color <i class="fa fa-chevron-up"></i><i
+                            <div class="header-item" id="sort-color">色 <i class="fa fa-chevron-up"></i><i
                                     class="fa fa-chevron-down"></i></div>
                         </div>
                         <ul class="project-list">
@@ -147,7 +147,7 @@
                             <input type="text" class="form-control" id="project-name-modal">
                         </div>
                         <div class="form-group">
-                            <label for="project-code" class="font-weight-bold">プロジェクト・コード</label>
+                            <label for="project-code" class="font-weight-bold">コード</label>
                             <input type="text" class="form-control" id="project-code-modal">
                         </div>
                         <div class="form-group">
@@ -196,16 +196,16 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" id="delete-project-link">프로젝트를 삭제하기</a>
+                        <a href="#" id="delete-project-link">プロジェクトを削除する</a>
                         <hr>
                         <button type="submit" class="btn btn-primary" id="edit-project-btn">更新</button>
                         <button type="button" class="btn btn-light" id="modal-close-btn">閉じる</button>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="show-edit-project-btn">Edit</button>
-                    <button type="button" class="btn btn-success" id="join-project-btn">Join</button>
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="show-edit-project-btn">編集</button>
+                    <button type="button" class="btn btn-success" id="join-project-btn">参加</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">閉じる</button>
                 </div>
             </div>
         </div>

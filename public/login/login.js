@@ -1,3 +1,4 @@
+// サインアップフォームとサインインフォームを切り替えるためのjQuery関数
 $("#signup").click(function () {
     $("#first").fadeOut("fast", function () {
         $("#second").fadeIn("fast");
@@ -10,8 +11,7 @@ $("#signin").click(function () {
     });
 });
 
-
-
+// ログインフォームのバリデーションを行うためのjQuery関数
 $(function () {
     $("form[name='login']").validate({
         rules: {
@@ -40,8 +40,7 @@ $(function () {
     });
 });
 
-
-
+// 登録フォームのバリデーションを行うためのjQuery関数
 $(function () {
 
     $("form[name='registration']").validate({
