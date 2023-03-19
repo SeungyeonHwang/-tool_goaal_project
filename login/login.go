@@ -35,14 +35,14 @@ type GoogleUserId struct {
 }
 
 var googleOauthConfig = oauth2.Config{
-	// RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
-	// ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-	// ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
-	RedirectURL:  "http://localhost:3000/auth/google/callback",
-	ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
-	ClientSecret: "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",
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-	Endpoint:     google.Endpoint,
+	RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
+	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+	ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
+	// RedirectURL:  "http://localhost:3000/auth/google/callback",
+	// ClientID:     "436991097398-h5bejll8dmsup6pi6r0gt0nk4sdjgai6.apps.googleusercontent.com",
+	// ClientSecret: "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",
+	Scopes:   []string{"https://www.googleapis.com/auth/userinfo.email"},
+	Endpoint: google.Endpoint,
 }
 
 // ユーザーがログインしているかどうかを確認するために使用されます。
