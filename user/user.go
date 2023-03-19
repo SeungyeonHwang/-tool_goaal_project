@@ -27,8 +27,9 @@ func (h *Handler) GetUserInfoById(w http.ResponseWriter, r *http.Request) {
 	rd.JSON(w, http.StatusOK, userInfo)
 }
 
+// Webアプリケーションのセキュリティ機能を実装するために使用されます。
+// このメソッドは、データベースハンドラーとHTTPレスポンスライターとHTTPリクエストを引数として受け取り、ブール値を返します。
 func CheckAccessPermission(db model.DBHandler, w http.ResponseWriter, r *http.Request) bool {
-	// check if the request is for /todo/todo.html?project-id={project_id}
 	if r.URL.Path == "/todo/todo.html" {
 		projectId, err := strconv.Atoi(r.URL.Query().Get("project-id"))
 		if err != nil {
@@ -38,16 +39,16 @@ func CheckAccessPermission(db model.DBHandler, w http.ResponseWriter, r *http.Re
 		sessionId := login.GetSessionId(r)
 		userId := db.GetUserIdBySessionId(sessionId)
 
-		// get participants list of the project
+		// プロジェクトの参加者リストを取得
 		participants := db.GetProjectParticipants(projectId)
 
-		// check if the project exists
+		// プロジェクトが存在するかどうかを確認
 		if len(participants) == 0 {
 			http.Error(w, "Project not found", http.StatusNotFound)
 			return false
 		}
 
-		// check if the user is a participant of the project
+		// ユーザーがプロジェクトの参加者であるかどうかをチェック
 		for _, p := range participants {
 			if p.Id == userId {
 				return true

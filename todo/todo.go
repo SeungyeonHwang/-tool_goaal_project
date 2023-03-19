@@ -24,6 +24,7 @@ type Success struct {
 	Success bool `json:"success"`
 }
 
+// 指定されたプロジェクトのTodoアイテムリストを取得するために使用されます。
 func (h *Handler) GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	projectId := r.FormValue("projectId")
 	sort := r.FormValue("sort")
@@ -52,6 +53,7 @@ func (h *Handler) GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	rd.JSON(w, http.StatusOK, list)
 }
 
+// 新しいTodoアイテムを追加するために使用されます。
 func (h *Handler) AddTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	sessionId := login.GetSessionId(r)
@@ -61,6 +63,7 @@ func (h *Handler) AddTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	rd.JSON(w, http.StatusCreated, todo)
 }
 
+// 指定されたTodoアイテムを削除するために使用されます。
 func (h *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -72,6 +75,7 @@ func (h *Handler) RemoveTodoListHandler(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// 指定されたプロジェクトの完了済みTodoアイテムを削除するために使用されます。
 func (h *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
 	ok := h.db.RemoveCompletedTodo(projectId)
@@ -82,6 +86,7 @@ func (h *Handler) RemoveCompletedTodoListHandler(w http.ResponseWriter, r *http.
 	}
 }
 
+// 指定されたTodoアイテムを完了済みにマークするために使用されます。
 func (h *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -94,6 +99,7 @@ func (h *Handler) CompleteTodoListHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// 指定されたプロジェクトの進捗状況を取得するために使用されます。
 func (h *Handler) GetTodoProgressHandler(w http.ResponseWriter, r *http.Request) {
 	projectId, _ := strconv.Atoi(r.FormValue("projectId"))
 	progress := h.db.GetProgress(projectId)

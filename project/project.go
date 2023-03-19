@@ -29,6 +29,7 @@ func (h *Handler) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "project/project.html", http.StatusTemporaryRedirect)
 }
 
+// ログインされたユーザーが新しいプロジェクトを作成するために使用されます。
 func (h *Handler) AddProjectListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
 	name := r.FormValue("name")
@@ -41,6 +42,7 @@ func (h *Handler) AddProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	rd.JSON(w, http.StatusCreated, project)
 }
 
+// ログインされたユーザーが参加しているプロジェクトのリストを取得するために使用されます。
 func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := login.GetSessionId(r)
 	userId := h.db.GetUserIdBySessionId(sessionId)
@@ -50,6 +52,7 @@ func (h *Handler) GetProjectListHandler(w http.ResponseWriter, r *http.Request) 
 	rd.JSON(w, http.StatusOK, list)
 }
 
+// 指定されたプロジェクトの参加者リストを取得するために使用されます。
 func (h *Handler) GetProjectParticipantListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	projectId, _ := strconv.Atoi(vars["id"])
@@ -58,6 +61,7 @@ func (h *Handler) GetProjectParticipantListHandler(w http.ResponseWriter, r *htt
 	rd.JSON(w, http.StatusOK, list)
 }
 
+// 指定されたプロジェクトに参加できるユーザーのリストを取得するために使用されます。
 func (h *Handler) GetProjectAvailableUsersListHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	projectId, _ := strconv.Atoi(vars["id"])
@@ -66,6 +70,7 @@ func (h *Handler) GetProjectAvailableUsersListHandler(w http.ResponseWriter, r *
 	rd.JSON(w, http.StatusOK, list)
 }
 
+// 指定されたプロジェクトを取得するために使用されます。
 func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -73,6 +78,7 @@ func (h *Handler) GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	rd.JSON(w, http.StatusOK, project)
 }
 
+// ユーザーが指定されたプロジェクトを編集できるかどうかを確認するために使用されます。
 func (h *Handler) CheckProjectEditAuthHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -81,13 +87,14 @@ func (h *Handler) CheckProjectEditAuthHandler(w http.ResponseWriter, r *http.Req
 	rd.JSON(w, http.StatusOK, canEdit)
 }
 
+// 指定されたプロジェクトを更新するために使用されます。
 func (h *Handler) UpdateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
 	err := r.ParseForm()
 	if err != nil {
-		rd.JSON(w, http.StatusBadRequest, "잘못된 요청입니다.")
+		rd.JSON(w, http.StatusBadRequest, "フォームの解析に失敗しました。入力されたデータを確認してください。")
 		return
 	}
 
@@ -108,6 +115,7 @@ func (h *Handler) UpdateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	rd.JSON(w, http.StatusOK, project)
 }
 
+// 指定されたプロジェクトを削除するために使用されます。
 func (h *Handler) RemoveProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -119,6 +127,7 @@ func (h *Handler) RemoveProjectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// 指定されたプロジェクトのTodoアイテムページにリダイレクトするために使用されます。
 func (h *Handler) GoToTodoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
