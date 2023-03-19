@@ -42,10 +42,13 @@
                 description: description,
                 color: selectedColor,
                 priority: priority
+            }).done(function() {
+                projectName.val("");
+                projectCode.val("");
+                projectDescription.val("");
+        
+                location.reload();
             });
-            projectName.val("");
-            projectCode.val("");
-            projectDescription.val("");
         });
 
         $.ajaxSetup({
@@ -290,9 +293,11 @@
                                         },
                                         success: function () {
                                             alert("プロジェクトが更新されました。");
+                                            location.reload();
                                         },
                                         error: function () {
                                             alert("プロジェクトの更新に失敗しました。");
+                                            location.reload();
                                         }
                                     });
                                 }).catch(() => {
