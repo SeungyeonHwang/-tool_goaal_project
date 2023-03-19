@@ -3,12 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/SeungyeonHwang/tool-goaal/app"
 )
 
 func main() {
-	// port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 
 	app := app.MakeHandler("./db/main.db")
 	defer app.Close()
@@ -16,10 +17,10 @@ func main() {
 	log.Println("Start Goaal App...")
 
 	// dev
-	err := http.ListenAndServe("127.0.0.1:3000", app)
+	// err := http.ListenAndServe("127.0.0.1:3000", app)
 
 	// prod
-	// err := http.ListenAndServe(":"+port, app)
+	err := http.ListenAndServe(":"+port, app)
 	if err != nil {
 		panic(err)
 	}
