@@ -42,11 +42,11 @@
                 description: description,
                 color: selectedColor,
                 priority: priority
-            }).done(function() {
+            }).done(function () {
                 projectName.val("");
                 projectCode.val("");
                 projectDescription.val("");
-        
+
                 location.reload();
             });
         });
@@ -211,16 +211,18 @@
                                 var availableUsersSelect = $('#available-users');
                                 var selectedUsersSelect = $('#selected-users');
                                 if (!availableUsersLoaded) {
-                                    
+
                                     // プロジェクトの利用可能なユーザーを取得し、フォーム内のユーザー選択リストを更新するためのjQuery関数
                                     $.get(`/projects/${itemId}/availableUsers`, function (availableUsers) {
                                         availableUsers.forEach(function (availableUser) {
-                                            if (availableUser.id != project.user_id) {
-                                                availableUsersList.push({ id: availableUser.id, email: availableUser.email });
-                                                availableUsersSelect.append($('<option>', {
-                                                    value: availableUser.id,
-                                                    text: availableUser.email
-                                                }));
+                                            if (availableUser.id != project.user_i) {
+                                                if (!availableUsersList.some(user => user.id === availableUser.id)) {
+                                                    availableUsersList.push({ id: availableUser.id, email: availableUser.email });
+                                                    availableUsersSelect.append($('<option>', {
+                                                        value: availableUser.id,
+                                                        text: availableUser.email
+                                                    }));
+                                                }
                                             }
                                         });
                                         participantsList.forEach(function (participant) {
@@ -267,7 +269,7 @@
                                     });
                                 }
                             });
-                            
+
                             // プロジェクト情報を更新するためのjQuery関数
                             $("#edit-project-btn").on("click", function () {
                                 const confirmPromise = new Promise((resolve, reject) => {
@@ -347,7 +349,7 @@
 
                     modal.find("#project-description").html(project.description.replace(/\n/g, "<br>"));
                     modal.find("#project-createdAt").text(project.created_at);
-                    
+
                     // プロジェクトの参加者情報を取得し、モーダルで表示するためのjQuery関数
                     $.get(`/projects/${itemId}/participants`, function (participants) {
                         var participantList = ""
