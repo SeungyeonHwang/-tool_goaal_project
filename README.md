@@ -6,6 +6,7 @@
 
 > 下記のリンクを参照してください。🙇‍♂️    
 - **デモンストレーション** : https://www.youtube.com/watch?v=EhLCFp61wEo
+- **URl** : https://salty-hamlet-77528.herokuapp.com/
 
 # ✨アプリケーションの機能一覧
 
